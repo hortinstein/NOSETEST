@@ -47,14 +47,15 @@
 
 /* type definitions */
 
-typedef enum locktype locktype_t;
-
 // locktype enumerates the two typs of rw locks. This isused in the macros above for
 // simplifying all the locking/unlocking that goes on.
 enum locktype {
     l_read,
     l_write
 };
+
+typedef enum locktype locktype_t;
+
 
 // ll_node models a linked-list node
 struct ll_node {
