@@ -70,53 +70,53 @@ struct ll {
 // returns a pointer to an allocated linked list.
 // needs a taredown function that is called with
 // a pointer to the value when it is being deleted.
-ll_t *ll_new(gen_fun_t val_teardown);
+extern "C" ll_t *ll_new(gen_fun_t val_teardown);
 
 // traverses the linked list, deallocated everything (including `list`)
-void ll_delete(ll_t *list);
+extern "C" void ll_delete(ll_t *list);
 
 // inserts a value into the linked list at position `n`. acceptable values for n are `0`
 // (puts it in first) to `list->len` (puts it in last).
 // returns the new length of the linked list if successful, -1 otherwise
-int ll_insert_n(ll_t *list, void *val, int n);
+extern "C" int ll_insert_n(ll_t *list, void *val, int n);
 
 // puts a value at the front of the linked list.
 // returns the new length of the linked list if successful, -1 otherwise
-int ll_insert_first(ll_t *list, void *val);
+extern "C" int ll_insert_first(ll_t *list, void *val);
 
 // puts a value at the end of the linked list.
 // returns the new length of the linked list if successful, -1 otherwise
-int ll_insert_last(ll_t *list, void *val);
+extern "C" int ll_insert_last(ll_t *list, void *val);
 
 // removes the value at position n of the linked list.
 // returns the new length of the linked list if successful, -1 otherwise
-int ll_remove_n(ll_t *list, int n);
+extern "C" int ll_remove_n(ll_t *list, int n);
 
 // removes the value at the front of the linked list.
 // returns the new length of the linked list if successful, -1 otherwise
-int ll_remove_first(ll_t *list);
+extern "C" int ll_remove_first(ll_t *list);
 
 // given a function that tests the values in the linked list, the first element that
 // satisfies that function is removed.
 // returns the new length of the linked list if successful, -1 otherwise
-int ll_remove_search(ll_t *list, int cond(void *));
+extern "C" int ll_remove_search(ll_t *list, int cond(void *));
 
 // returns a pointer to the `n`th value in the linked list.
 // returns `NULL` if unsuccessful
-void *ll_get_n(ll_t *list, int n);
+extern "C" void *ll_get_n(ll_t *list, int n);
 
 // returns a pointer to the first value in a linked list.
 // `NULL` if empty
-void *ll_get_first(ll_t *list);
+extern "C" void *ll_get_first(ll_t *list);
 
 // runs f on all values of list
-void ll_map(ll_t *list, gen_fun_t f);
+extern "C" void ll_map(ll_t *list, gen_fun_t f);
 
 // goes through all the values of a linked list and calls `list->val_printer` on them
-void ll_print(ll_t list);
+extern "C" void ll_print(ll_t list);
 
 // a generic taredown function for values that don't need anything done
-void ll_no_teardown(void *n);
+extern "C" void ll_no_teardown(void *n);
 
 // LL_H
 #endif

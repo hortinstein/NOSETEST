@@ -55,12 +55,12 @@ test_exec: $(TEST_EXEC)
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(OBJDIR)
 	@echo building object files...
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -fprofile-arcs -ftest-coverage -o $@ -c $<
 
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)
 	@echo building object files...
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -fprofile-arcs -ftest-coverage -o $@ -c $<
 
 # makes sure bin/ is created and the builds the proper binary name
 $(EXEC): %: $(BINDIR) $(BINDIR)/%
@@ -80,7 +80,7 @@ $(TEST_EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.cpp
 	@echo building test binary...
-	$(CC) $(CFLAGS) -o $@ $< -L /usr/local/lib -l $(GOOGLE_TEST_LIB) 
+	$(CC) $(CFLAGS) -fprofile-arcs -ftest-coverage -o $@ $< obj/ll.o -L /usr/local/lib -l $(GOOGLE_TEST_LIB) 
 
 test: $(EXEC)
 	@echo running tests...
@@ -94,7 +94,7 @@ $(DIRS):
 	@mkdir -p $@
 
 # cleans everything up when done
-clean: clean_obj clean_ll
+clean: clean_obj clean_ll clean_ll_test
 # *.dSYM directories made by clang on darwin
 	@rm -rf $(BINDIR)/*.dSYM
 # removes the object files. useful at the end of all
@@ -104,6 +104,9 @@ clean_obj:
 clean_ll:
 	@echo removing binary...
 	@rm -f $(BINDIR)/$(EXEC)
+clean_ll_test:
+	@echo removing binary...
+	@rm -f $(BINDIR)/$(TEST_EXEC)
 clean_very:
 	@echo removing binary directory...
 	@rm -rf $(BINDIR)

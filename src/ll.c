@@ -46,7 +46,6 @@
 #define RWUNLOCK(lk) pthread_rwlock_unlock(&(lk));
 
 /* type definitions */
-
 // locktype enumerates the two typs of rw locks. This isused in the macros above for
 // simplifying all the locking/unlocking that goes on.
 enum locktype {
