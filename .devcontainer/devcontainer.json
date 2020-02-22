@@ -1,5 +1,5 @@
 {
-    "name": "Unit Testing",
+    "name": "NOSETEST",
     "dockerFile": "Dockerfile",
     "appPort": 3000,
     "extensions": [

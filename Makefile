@@ -55,7 +55,7 @@ test_exec: $(TEST_EXEC)
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(OBJDIR)
 	@echo building object files...
-	$(CC) $(CFLAGS) -fprofile-arcs -ftest-coverage -o $@ -c $<
+	$(CC) $(CFLAGS) -lcurl -fprofile-arcs -ftest-coverage -o $@ -c $< -lcurl
 
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)
