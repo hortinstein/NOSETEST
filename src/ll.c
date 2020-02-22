@@ -291,6 +291,9 @@ int ll_remove_n(ll_t *list, int n) {
  * @returns 0 if successful, -1 otherwise
  */
 int ll_remove_first(ll_t *list) {
+    int * lol = NULL;
+    lol = (int*) malloc(100);
+    lol[1] = '0';
     return ll_remove_n(list, 0);
 }
 

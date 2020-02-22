@@ -27,14 +27,14 @@ CC = g++
 # `Werror`  - makes all warnings errors
 # `Wextra`  - enables some extra warning flags that `all` doesn't set
 # `Wunused` - complains about any variable, function, label, etc. not being used
-CFLAGS = -Wall -Werror -Wextra -Wunused -Wno-pointer-arith 
+CFLAGS = -Wall -Werror -Wextra -Wunused -Wno-pointer-arith -g -ggdb
 # `g`           - generate source code debug info
 # `std=`        - sets the language standard, in this case c99
 # `_GNU_SOURCE` - is a macro that tells the compiler to use rsome gnu functions
 # `pthred`      - adds support for multithreading with the pthreads lib (for preprocessor
 #                 and linker)
 # `O3`          - the level of optimization
-CFLAGS += -g -D_GNU_SOURCE -pthread -O3 -I $(GOOGLE_TEST_INCLUDE)
+CFLAGS += -g -D_GNU_SOURCE -pthread  -I $(GOOGLE_TEST_INCLUDE)
 # `-I` - adds directory to the system search path (for include files)
 CFLAGS += -I"$(INCDIR)" 
 
@@ -87,11 +87,11 @@ test: $(EXEC)
 	@$(BINDIR)/$(EXEC)
 
 cov_unit: clean all 
-	@./$(BINDIR)/$(TEST_EXEC)
+	@valgrind --leak-check=yes --tool=memcheck ./$(BINDIR)/$(TEST_EXEC)
 	@gcovr
 
 cov_int: clean all 
-	@./$(BINDIR)/$(EXEC)
+	@valgrind --leak-check=yes --tool=memcheck ./$(BINDIR)/$(EXEC)
 	@gcovr
 
 
