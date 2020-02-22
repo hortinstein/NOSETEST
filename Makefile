@@ -39,7 +39,7 @@ CFLAGS += -g -D_GNU_SOURCE -pthread -O3 -I $(GOOGLE_TEST_INCLUDE)
 CFLAGS += -I"$(INCDIR)" 
 
 # designates which rules aren't actually targets
-.PHONY: all o exec test clean clean_obj clean_ll clean_very
+.PHONY: all o exec test clean clean_obj clean_ll clean_very cov_int cov_unit
 
 all: $(OBJ) $(EXEC) $(TEST_EXEC)
 
@@ -80,11 +80,20 @@ $(TEST_EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.cpp
 	@echo building test binary...
-	$(CC) $(CFLAGS) -fprofile-arcs -ftest-coverage -o $@ $< obj/ll.o -L /usr/local/lib -l $(GOOGLE_TEST_LIB) 
+	$(CC) $(CFLAGS) -static -static-libgcc -static-libstdc++ -fprofile-arcs -ftest-coverage -o $@ $< obj/ll.o -L /usr/local/lib -l $(GOOGLE_TEST_LIB) 
 
 test: $(EXEC)
 	@echo running tests...
 	@$(BINDIR)/$(EXEC)
+
+cov_unit: clean all 
+	@./$(BINDIR)/$(TEST_EXEC)
+	@gcovr
+
+cov_int: clean all 
+	@./$(BINDIR)/$(EXEC)
+	@gcovr
+
 
 ###############
 ### CLEANS
@@ -94,7 +103,7 @@ $(DIRS):
 	@mkdir -p $@
 
 # cleans everything up when done
-clean: clean_obj clean_ll clean_ll_test
+clean: clean_obj clean_ll clean_ll_test clean_cov
 # *.dSYM directories made by clang on darwin
 	@rm -rf $(BINDIR)/*.dSYM
 # removes the object files. useful at the end of all
@@ -112,3 +121,9 @@ clean_very:
 	@rm -rf $(BINDIR)
 	@echo removing object directory...
 	@rm -rf $(OBJDIR)
+
+clean_cov:
+	@echo removing all coverage files...
+	@rm -rf $(OBJDIR)/*.gc*
+	@rm -rf ./*.gc*
+	
