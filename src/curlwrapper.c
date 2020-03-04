@@ -4,14 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
- 
-#include <curl/curl.h>
- 
-struct MemoryStruct {
-  char *memory;
-  size_t size;
-};
- 
+
+#include "curlwrapper.h"
+
+#include "ll.h" 
+#include "datatypes.h"
+
 static size_t
 WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -33,7 +31,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
   return realsize;
 }
  
-int main(void)
+int get_request(char * url)
 {
   CURL *curl_handle;
   CURLcode res;
@@ -49,7 +47,7 @@ int main(void)
   curl_handle = curl_easy_init();
  
   /* specify URL to get */ 
-  curl_easy_setopt(curl_handle, CURLOPT_URL, "spitestore");
+  curl_easy_setopt(curl_handle, CURLOPT_URL, url);
  
   /* send all data to this function  */ 
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);

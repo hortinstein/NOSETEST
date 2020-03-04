@@ -6,6 +6,7 @@ using std::string;
 
 extern "C" {
     #include "ll.h"
+    #include "curlwrapper.h"
 }
 
 void num_teardownss(void *n) {
@@ -20,7 +21,9 @@ int num_equals_3ss(void *n) {
     return *(int *)n == 3;
 }
 
-TEST(agent_lib, echo) {
+
+//This is an example of semi working, but absolute garbage testing
+TEST(ll_lib, bad_tests) {
    int *_n; // for storing returned ones
     int test_count = 1;
     int fail_count = 0;
@@ -128,9 +131,50 @@ TEST(agent_lib, echo) {
     fprintf(stderr, "PASSED all %d tests!\n", test_count);
     
 }
-TEST(agent_lib, echo_wrong) {
 
+
+///!_SKELETON
+//!_ // add a test here to cause a segmentation fault and fix that fault
+//!_ // HINT - look at linked list initiliazation, insert functions and argument checking
+//!_ TEST(agent_lib, segfault) {
+//!_     
+//!_ }
+///!_SKELETON
+
+///!_SOLUTION
+
+//checks to see all the functions work with null values
+TEST(ll_lib, segfault) {     
+    ll_insert_first(NULL, (void*) "asd");
 }
+///!_SOLUTION
+
+////////////////////////////////
+////////// CURL TESTS ////////// 
+////////////////////////////////
+
+///!_SKELETON
+
+//!_ TEST(curl_lib, get) {
+//!_     
+//!_ }
+
+//!_ TEST(curl_lib, post) {
+//!_     
+//!_ }
+///!_SKELETON
+
+///!_SOLUTION
+
+TEST(curl_lib, get) {
+    get_request((char *)"http://localhost:8000");     
+}
+
+TEST(curl_lib, post) {
+     
+}
+///!_SOLUTION
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv); 

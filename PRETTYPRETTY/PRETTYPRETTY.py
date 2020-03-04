@@ -1,8 +1,8 @@
 """
 Very simple HTTP server in python (Updated for Python 3.7)
 Usage:
-    ./dummy-web-server.py -h
-    ./dummy-web-server.py -l localhost -p 8000
+    ./PRETTYPRETTY.py -h
+    ./PRETTYPRETTY.py -l localhost -p 8000
 Send a GET request:
     curl http://localhost:8000
 Send a HEAD request:

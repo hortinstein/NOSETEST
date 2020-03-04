@@ -228,6 +228,11 @@ int ll_insert_n(ll_t *list, void *val, int n) {
  * @returns the new length of thew linked list on success, -1 otherwise
  */
 int ll_insert_first(ll_t *list, void *val) {
+    ///!_SKELETON
+    ///!_SKELETON
+    ///!_SOLUTION
+    if (NULL == list) return -1;
+    ///!_SOLUTION
     return ll_insert_n(list, val, 0);
 }
 

@@ -55,7 +55,7 @@ test_exec: $(TEST_EXEC)
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(OBJDIR)
 	@echo building object files...
-	$(CC) $(CFLAGS) -lcurl -fprofile-arcs -ftest-coverage -o $@ -c $< -lcurl
+	$(CC) $(CFLAGS) -lcurl -static -static-libgcc -fprofile-arcs -ftest-coverage -o $@ -c $<  -lcurl
 
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)
@@ -68,7 +68,7 @@ $(EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.c
 	@echo building binary...
-	$(CC) $(CFLAGS) -DLL -lgcov --coverage -o $@ $< obj/ll.o
+	$(CC) $(CFLAGS) -DLL -lgcov --coverage -o $@ $< obj/ll.o obj/curl.o -lcurl
 
 ###############
 ### TESTS
@@ -80,7 +80,7 @@ $(TEST_EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.cpp
 	@echo building test binary...
-	$(CC) $(CFLAGS) -static -static-libgcc -static-libstdc++ -fprofile-arcs -ftest-coverage -o $@ $< obj/ll.o -L /usr/local/lib -l $(GOOGLE_TEST_LIB) 
+	$(CC) $(CFLAGS)  -fprofile-arcs -ftest-coverage -o $@ $<  obj/ll.o  -lcurl obj/curlwrapper.o -lcurl  -L /usr/local/lib -l $(GOOGLE_TEST_LIB)
 
 test: $(EXEC)
 	@echo running tests...
