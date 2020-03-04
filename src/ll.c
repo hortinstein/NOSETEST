@@ -296,9 +296,18 @@ int ll_remove_n(ll_t *list, int n) {
  * @returns 0 if successful, -1 otherwise
  */
 int ll_remove_first(ll_t *list) {
-    int * lol = NULL;
-    lol = (int*) malloc(100);
-    lol[1] = '0';
+    ///!_SKELETON
+    //!_ int * lol = NULL;
+    //!_ lol = (int*) malloc(100);
+    //!_ lol[1] = '0';
+    ///!_SKELETON
+
+    ///!_SOLUTION
+    //int * lol = NULL;
+    //lol = (int*) malloc(100);
+    //lol[1] = '0';
+    ///!_SOLUTION
+    
     return ll_remove_n(list, 0);
 }
 

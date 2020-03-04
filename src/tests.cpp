@@ -145,7 +145,7 @@ TEST(ll_lib, bad_tests) {
 
 //checks to see all the functions work with null values
 TEST(ll_lib, segfault) {     
-    ll_insert_first(NULL, (void*) "asd");
+    //ll_insert_first(NULL, (void*) "asd");
 }
 ///!_SOLUTION
 
@@ -168,6 +168,10 @@ TEST(ll_lib, segfault) {
 
 TEST(curl_lib, get) {
     get_request((char *)"http://localhost:8000");     
+}
+
+TEST(curl_lib, get_invalid) {
+    get_request((char *)"http://localhost:808make0");     
 }
 
 TEST(curl_lib, post) {
