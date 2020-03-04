@@ -9,7 +9,7 @@ GOOGLE_TEST_LIB = gtest
 GOOGLE_TEST_INCLUDE = /usr/local/include
 
 # name of executable
-EXEC = ll
+EXEC = SPITESTORE
 TEST_EXEC = tests
 
 # all the cource code pregenerated as a string and not just the string `*.c`
@@ -68,7 +68,7 @@ $(EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.c
 	@echo building binary...
-	$(CC) $(CFLAGS) -DLL -o $@ $<
+	$(CC) $(CFLAGS) -DLL -lgcov --coverage -o $@ $< obj/ll.o
 
 ###############
 ### TESTS
