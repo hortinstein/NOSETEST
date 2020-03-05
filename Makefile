@@ -68,7 +68,7 @@ $(EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.c
 	@echo building binary...
-	$(CC) $(CFLAGS) -DLL -lgcov --coverage -o $@ $< obj/ll.o obj/curl.o -lcurl
+	$(CC) $(CFLAGS) -DLL -lgcov --coverage -o $@ $< obj/ll.o obj/curlwrapper.o -lcurl
 
 ###############
 ### TESTS
