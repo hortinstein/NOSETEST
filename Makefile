@@ -27,7 +27,7 @@ CC = g++
 # `Werror`  - makes all warnings errors
 # `Wextra`  - enables some extra warning flags that `all` doesn't set
 # `Wunused` - complains about any variable, function, label, etc. not being used
-CFLAGS = -Wall -Werror -Wextra -Wunused -Wno-pointer-arith -g -ggdb
+CFLAGS = -Wall -Werror -Wextra -DDEBUG -Wunused -Wno-pointer-arith -g -ggdb
 # `g`           - generate source code debug info
 # `std=`        - sets the language standard, in this case c99
 # `_GNU_SOURCE` - is a macro that tells the compiler to use rsome gnu functions
@@ -68,7 +68,7 @@ $(EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.c
 	@echo building binary...
-	$(CC) $(CFLAGS) -DLL -lgcov --coverage -o $@ $< obj/ll.o obj/curlwrapper.o -lcurl
+	$(CC) $(CFLAGS) -DDEBUG -DLL -lgcov --coverage -o $@ $< obj/ll.o obj/curlwrapper.o -lcurl
 
 ###############
 ### TESTS
@@ -80,7 +80,7 @@ $(TEST_EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.cpp
 	@echo building test binary...
-	$(CC) $(CFLAGS)  -fprofile-arcs -ftest-coverage -o $@ $<  obj/ll.o  -lcurl obj/curlwrapper.o -lcurl  -L /usr/local/lib -l $(GOOGLE_TEST_LIB)
+	$(CC) $(CFLAGS)  -fprofile-arcs -DDEBUG -ftest-coverage -o $@ $<  obj/ll.o -lcurl obj/curlwrapper.o -lcurl  -L /usr/local/lib -l $(GOOGLE_TEST_LIB)
 
 test: $(EXEC)
 	@echo running tests...

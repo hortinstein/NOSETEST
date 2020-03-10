@@ -7,6 +7,4 @@ struct MemoryStruct {
   size_t size;
 };
  
-
-
 #endif

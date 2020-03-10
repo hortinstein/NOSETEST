@@ -175,7 +175,7 @@ TEST(curl_lib, get_invalid) {
 }
 
 TEST(curl_lib, post) {
-     
+     post_request((char *)"http://localhost:8000",(char*)"helloworld");
 }
 ///!_SOLUTION
 
