@@ -27,7 +27,7 @@ CC = g++
 # `Werror`  - makes all warnings errors
 # `Wextra`  - enables some extra warning flags that `all` doesn't set
 # `Wunused` - complains about any variable, function, label, etc. not being used
-CFLAGS = -Wall -Werror -Wextra -DDEBUG -Wunused -Wno-pointer-arith -g -ggdb
+CFLAGS = -Wall -Werror -Wextra -DDEBUG -Wunused -Wno-pointer-arith -g -ggdb -lcurl -lmonocypher
 # `g`           - generate source code debug info
 # `std=`        - sets the language standard, in this case c99
 # `_GNU_SOURCE` - is a macro that tells the compiler to use rsome gnu functions
@@ -55,7 +55,7 @@ test_exec: $(TEST_EXEC)
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(OBJDIR)
 	@echo building object files...
-	$(CC) $(CFLAGS) -lcurl -static -static-libgcc -fprofile-arcs -ftest-coverage -o $@ -c $<  -lcurl
+	$(CC) $(CFLAGS) -lcurl -static -static-libgcc -fprofile-arcs -ftest-coverage -o $@ -c $<  -lcurl -lmonocypher
 
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)
@@ -68,7 +68,7 @@ $(EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.c
 	@echo building binary...
-	$(CC) $(CFLAGS) -DDEBUG -DLL -lgcov --coverage -o $@ $< obj/ll.o obj/curlwrapper.o -lcurl
+	$(CC) $(CFLAGS) -DDEBUG -DLL -lgcov --coverage -o $@ $< obj/ll.o obj/curlwrapper.o -lcurl -lmonocypher
 
 ###############
 ### TESTS
