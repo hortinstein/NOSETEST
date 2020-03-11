@@ -7,6 +7,7 @@ using std::string;
 extern "C" {
     #include "ll.h"
     #include "curlwrapper.h"
+    #include "debug.h"
 }
 
 void num_teardownss(void *n) {
@@ -167,15 +168,15 @@ TEST(ll_lib, segfault) {
 ///!_SOLUTION
 
 TEST(curl_lib, get) {
-    get_request((char *)"http://localhost:8000");     
+    get_request((char *)"");     
 }
 
 TEST(curl_lib, get_invalid) {
-    get_request((char *)"http://localhost:808make0");     
+    get_request((char *)PP_URL);     
 }
 
 TEST(curl_lib, post) {
-     post_request((char *)"http://localhost:8000",(char*)"helloworld");
+     post_request((char *)PP_URL,(char*)"helloworld");
 }
 ///!_SOLUTION
 
