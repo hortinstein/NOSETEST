@@ -1,40 +1,49 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include <monocypher.h>
-#include "debug.h"
 
-int enc(){
+#include "encryption.h"
+//todo srand errors and no checking
+int gen_rdm_bytestream (LocalKeys * km, size_t num_bytes)
+{
+  if (!km) return FAILURE;
+  srand ((unsigned int) time (NULL));
+  unsigned char *stream = (unsigned char *)malloc (num_bytes);
+  size_t i;
 
-    uint8_t key        [32];    /* Random, secret session key  */ 
-    uint8_t nonce      [24];    /* Use only once per key       */ 
-    uint8_t plain_text [12] = "Lorem ipsum"; /* Secret message */ 
-    uint8_t mac        [16];    /* Message authentication code */ 
-    uint8_t cipher_text[12];              /* Encrypted message */ 
-    arc4random_buf(key,   32); 
-    arc4random_buf(nonce, 24); 
-    crypto_lock(mac, cipher_text, key, nonce, plain_text, 
-            sizeof(plain_text)); 
-    /* Wipe secrets if they are no longer needed */ 
-    crypto_wipe(plain_text, 12); 
-    crypto_wipe(key, 32); 
-    /* Transmit cipher_text, nonce, and mac over the network, 
-    * store them in a file, etc. 
-    */
+  for (i = 0; i < num_bytes; i++)
+  {
+    stream[i] = rand ();
+  }
 
-   uint8_t       key        [32]; /* Same as the above        */ 
-    uint8_t       nonce      [24]; /* Same as the above        */ 
-    const uint8_t cipher_text[12]; /* Encrypted message        */ 
-    const uint8_t mac        [16]; /* Received along with text */ 
-    uint8_t       plain_text [12]; /* Secret message           */ 
-    if (crypto_unlock(plain_text, key, nonce, mac, cipher_text, 12)) { 
-        /* The message is corrupted. 
-        * Wipe key if it is no longer needed, 
-        * and abort the decryption. 
-        */ 
-        crypto_wipe(key, 32); 
-    } else { 
-        /* ...do something with the decrypted text here... */ 
-        /* Finally, wipe secrets if they are no longer needed */ 
-        crypto_wipe(plain_text, 12); 
-        crypto_wipe(key, 32); 
-    }
+  memcpy(km->my_priv_key,stream,num_bytes);
+  return SUCCESS;
 }
+
+int gen_keys(LocalKeys * km){
+    if (!km) return FAILURE;
+    gen_rdm_bytestream(km,KEY_LEN); 
+    crypto_key_exchange_public_key(km->my_pub_key, km->my_priv_key); 
+    return SUCCESS;
+}
+
+int derive_session_key(KeyMat * km, uint8_t * my_priv_key,  uint8_t * sender_pub_key){
+    if (!km || !my_priv_key || !sender_pub_key) return FAILURE;
+
+
+    return SUCCESS;
+}
+
+int enc(EncryptedBytes * eb , KeyMat * km, uint8_t * pt ){
+    if (!eb || !km || !pt) return FAILURE;
+    // uint8_t nonce      [24];    /* Use only once per key       */ 
+    // uint8_t mac        [16];    /* Message authentication code */ 
+    // arc4random_buf(nonce, 24); 
+    // crypto_lock(mac, cipher_text, key, nonce, plain_text, 
+    //         sizeof(plain_text)); 
+    return SUCCESS;
+}
+

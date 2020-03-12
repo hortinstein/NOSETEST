@@ -8,6 +8,7 @@ extern "C" {
     #include "ll.h"
     #include "curlwrapper.h"
     #include "debug.h"
+    #include "encryption.h"
 }
 
 void num_teardownss(void *n) {
@@ -176,9 +177,19 @@ TEST(curl_lib, get_invalid) {
 }
 
 TEST(curl_lib, post) {
-     post_request((char *)PP_URL,(char*)"helloworld");
+    post_request((char *)PP_URL,(char*)"helloworld");
 }
 ///!_SOLUTION
+
+
+
+
+TEST(enc_lib, gen_key) {
+    LocalKeys me;
+    gen_keys(&me);
+}
+
+
 
 
 int main(int argc, char **argv) {

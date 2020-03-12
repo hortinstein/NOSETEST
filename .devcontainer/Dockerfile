@@ -1,7 +1,7 @@
 FROM alpine
 
 
-RUN apk add --no-cache -q -f git cmake make g++ gcov gcovr valgrind curl-dev python3-pip python3-dev
+RUN apk add --no-cache -q -f git cmake make g++ gcov gcovr valgrind curl-dev python3-pip python3-dev libbsd-dev
 
 RUN git config --global user.email "hortinstein@gmail.com"
 RUN git config --global user.name "alex hortin"

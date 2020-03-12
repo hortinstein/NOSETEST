@@ -55,7 +55,7 @@ test_exec: $(TEST_EXEC)
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(OBJDIR)
 	@echo building object files...
-	$(CC) $(CFLAGS) -lcurl -static -static-libgcc -fprofile-arcs -ftest-coverage -o $@ -c $<  -lcurl -lmonocypher
+	$(CC) $(CFLAGS) -lmonocypher -lcurl -static -static-libgcc -fprofile-arcs -ftest-coverage -o $@ -c $<  -lcurl -lmonocypher
 
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)
@@ -80,7 +80,7 @@ $(TEST_EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.cpp
 	@echo building test binary...
-	$(CC) $(CFLAGS)  -fprofile-arcs -DDEBUG -ftest-coverage -o $@ $<  obj/ll.o -lcurl obj/curlwrapper.o -lcurl  -L /usr/local/lib -l $(GOOGLE_TEST_LIB)
+	$(CC) $(CFLAGS)  -fprofile-arcs -lmonocypher -DDEBUG -ftest-coverage -o $@ $<  obj/encryption.o obj/ll.o -lcurl obj/curlwrapper.o -lcurl  -L /usr/local/lib -l $(GOOGLE_TEST_LIB) 
 
 test: $(EXEC)
 	@echo running tests...
