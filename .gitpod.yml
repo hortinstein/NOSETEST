@@ -1,4 +1,2 @@
 image:
   file: .devcontainer/Dockerfile
-tasks:
-  - init: make
