@@ -21,6 +21,3 @@ RUN git clone -q https://github.com/google/googletest.git /googletest \
   && cmake .. && make && make install \
   && cd / && rm -rf /googletest
 
-
-RUN cp /monocypher-3.0.0/src/monocypher.h /workspace/NOSETEST/include/
-RUN cp /monocypher-3.0.0/src/monocypher.c /workspace/NOSETEST/src/
