@@ -26,6 +26,7 @@ int gen_rdm_bytestream (LocalKeys * km, size_t num_bytes)
 int gen_keys(LocalKeys * km){
     if (!km) return FAILURE;
     gen_rdm_bytestream(km,KEY_LEN); 
+    
     crypto_key_exchange_public_key(km->my_pub_key, km->my_priv_key); 
     return SUCCESS;
 }
