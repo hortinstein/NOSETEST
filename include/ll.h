@@ -47,7 +47,8 @@ typedef struct ll ll_t;
 typedef struct ll_node ll_node_t;
 
 // linked list
-struct ll {
+struct ll
+{
     // running length
     int len;
 
