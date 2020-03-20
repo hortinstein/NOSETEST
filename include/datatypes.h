@@ -18,13 +18,17 @@ typedef struct memoryStruct {
 
 
 typedef struct encryptedBytes{
-    uint8_t sender_pub_key [NONCE_LEN];    /* senders public key */
+    uint8_t sender_pub_key [KEY_LEN];    /* senders public key */
     uint8_t nonce [NONCE_LEN];    /* Use only once per key       */ 
     uint8_t mac [MAC_LEN];    /* Message authentication code */ 
     uint8_t len; /* Secret message length*/
     uint8_t * cypher_text;  /* Secret message */ 
 } EncryptedBytes;
 
+typedef struct deccryptedBytes{
+    uint8_t len; /* Secret message length*/
+    uint8_t * plain_text;  /* Secret message */ 
+} DecryptedBytes;
 
 typedef struct keyMat{
     uint8_t sender_pub_key [KEY_LEN];    /* Use only once per key       */ 

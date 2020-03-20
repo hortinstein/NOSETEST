@@ -147,7 +147,7 @@ TEST(ll_lib, bad_tests) {
 
 //checks to see all the functions work with null values
 TEST(ll_lib, segfault) {     
-    //ll_insert_first(NULL, (void*) "asd");
+    ll_insert_first(NULL, (void*) "asd");
 }
 ///!_SOLUTION
 
@@ -179,14 +179,89 @@ TEST(curl_lib, get_invalid) {
 TEST(curl_lib, post) {
     post_request((char *)PP_URL,(char*)"helloworld");
 }
+TEST(curl_lib, post_invalid) {
+    post_request((char *)"",(char*)"helloworld");
+}
 ///!_SOLUTION
 
 
 
-
+//checks to see if the key generates correctly
 TEST(enc_lib, gen_key) {
     LocalKeys me;
     gen_keys(&me);
+}
+
+
+void exchange_helper(KeyMat * km, LocalKeys * me, LocalKeys * them){
+    gen_keys(me);
+    gen_keys(them);
+
+    //copy into the structure
+    memcpy(km->sender_pub_key, them->my_pub_key, KEY_LEN);
+    memcpy(km->my_priv_key, me->my_priv_key, KEY_LEN);
+}
+
+//checks to see if the key generates correctly
+TEST(enc_lib, gen_session_key) {
+    LocalKeys me;
+    LocalKeys them;
+    KeyMat km;
+    exchange_helper(&km,&me,&them);
+    derive_session_key(&km);
+
+}
+
+//checks to see if the key generates correctly
+TEST(enc_lib, enc_dec) {
+    LocalKeys me;
+    LocalKeys them;
+    KeyMat km;
+    KeyMat km2;
+    EncryptedBytes eb;
+    DecryptedBytes db;
+    DecryptedBytes db2;
+    eb_init(&eb);
+    db_init(&db);
+    db_init(&db2);
+    uint8_t plain_text [12] = "Lorem ipsum"; /* Secret message */
+    
+    db.plain_text = plain_text;
+    db.len = sizeof(plain_text);
+
+    ///!_SKELETON
+    //!_ //TODO
+    //!_ //fill in the code to make this test pass 
+    ///!_SKELETON
+
+    ///!_SOLUTION
+    
+
+    //this simulates keys created independently on each machine
+    exchange_helper(&km,&me,&them);
+    exchange_helper(&km2,&them,&me);
+    
+    derive_session_key(&km);
+    derive_session_key(&km2);
+
+    enc(&eb,&km,&db);
+    ASSERT_STRNE((const char *)eb.cypher_text,(const char *)db2.plain_text);
+    dec(&db2,&km2,&eb);
+
+    ///!_SOLUTION
+    
+    ASSERT_EQ(eb.len, db.len) << "eb and dp have different lenths";
+    ASSERT_STREQ((const char *)plain_text,(const char *)db2.plain_text);
+
+    ///!_SKELETON
+    //!_ eb_free(&eb);
+    //!_ db_free(&db);
+    ///!_SKELETON
+
+    ///!_SOLUTION
+    eb_free(&eb);
+    db_free(&db2);
+    ///!_SOLUTION
 }
 
 

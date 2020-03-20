@@ -92,7 +92,7 @@ int get_request(char * url)
 
 int post_request(char * url, char * data)
 {
- CURL *curl;
+  CURL *curl;
   CURLcode res;
  
   /* In windows, this will init the winsock stuff */ 
