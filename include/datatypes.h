@@ -8,13 +8,13 @@
 #define NONCE_LEN 24
 #define MAC_LEN 16
 
-#define FAILURE 0
+#define FAILURE -1
 #define SUCCESS 0
 
 typedef struct memoryStruct
 {
     uint8_t size;
-    char *memory;
+    uint8_t * memory;
 } MemoryStruct;
 
 typedef struct encryptedBytes

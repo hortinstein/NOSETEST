@@ -186,23 +186,48 @@ TEST(ll_lib, segfault)
 
 ///!_SOLUTION
 
-TEST(curl_lib, get)
-{
-    get_request((char *)"");
-}
-
 TEST(curl_lib, get_invalid)
 {
-    get_request((char *)PP_URL);
+    MemoryStruct ms;
+    wrapper_curl_init();
+    ASSERT_EQ(FAILURE,get_request(&ms,(char *)""));
+    wrapper_curl_free();
+}
+
+TEST(curl_lib, get)
+{
+    MemoryStruct ms;
+    wrapper_curl_init();
+    ASSERT_EQ(SUCCESS,get_request(&ms,(char *)PP_URL));
+    wrapper_curl_free();
 }
 
 TEST(curl_lib, post)
 {
-    post_request((char *)PP_URL, (char *)"helloworld");
+    wrapper_curl_init();
+    
+    MemoryStruct ms;
+    uint8_t plain_text[12] = "Lorem ipsum"; /* Secret message */
+
+    ms.memory = plain_text;
+    ms.size = sizeof(plain_text);
+    
+
+    ASSERT_EQ(SUCCESS,post_request((char *)PP_URL, &ms));
+    wrapper_curl_free();
 }
+
 TEST(curl_lib, post_invalid)
 {
-    post_request((char *)"", (char *)"helloworld");
+    wrapper_curl_init();
+
+    MemoryStruct ms;
+    uint8_t plain_text[12] = "Lorem ipsum"; /* Secret message */
+
+    ms.memory = plain_text;
+    ms.size = sizeof(plain_text);
+    ASSERT_EQ(FAILURE,post_request((char *)"", &ms));
+    wrapper_curl_free();
 }
 ///!_SOLUTION
 

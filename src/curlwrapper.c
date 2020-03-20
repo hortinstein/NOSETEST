@@ -8,8 +8,17 @@
 #include "curlwrapper.h"
 
 #include "ll.h"
-#include "datatypes.h"
 #include "debug.h"
+
+void wrapper_curl_init(){
+    /* In windows, this will init the winsock stuff */
+    curl_global_init(CURL_GLOBAL_ALL);
+}
+
+void wrapper_curl_free(){
+    /* we're done with libcurl, so clean it up */
+    curl_global_cleanup();
+}
 
 static size_t
 WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
@@ -17,7 +26,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
     size_t realsize = size * nmemb;
     MemoryStruct *mem = (MemoryStruct *)userp;
 
-    char *ptr = (char *)realloc(mem->memory, mem->size + realsize + 1);
+    uint8_t * ptr = (uint8_t *)realloc(mem->memory, mem->size + realsize + 1);
     if (ptr == NULL)
     {
         /* out of memory! */
@@ -33,17 +42,13 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
     return realsize;
 }
 
-int get_request(char *url)
+int get_request(MemoryStruct * ms, char *url)
 {
     CURL *curl_handle;
     CURLcode res;
 
-    MemoryStruct chunk;
-
-    chunk.memory = (char *)malloc(1); /* will be grown as needed by the realloc above */
-    chunk.size = 0;                   /* no data at this point */
-
-    curl_global_init(CURL_GLOBAL_ALL);
+    ms->memory = (uint8_t *)malloc(1); /* will be grown as needed by the realloc above */
+    ms->size = 0;                   /* no data at this point */
 
     /* init the curl session */
     curl_handle = curl_easy_init();
@@ -55,7 +60,7 @@ int get_request(char *url)
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 
     /* we pass our 'chunk' struct to the callback function */
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
+    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&ms);
 
     /* some servers don't like requests that are made without a user-agent
      field, so we provide one */
@@ -73,10 +78,7 @@ int get_request(char *url)
         /* cleanup curl stuff */
         curl_easy_cleanup(curl_handle);
 
-        free(chunk.memory);
-
-        /* we're done with libcurl, so clean it up */
-        curl_global_cleanup();
+        free(ms->memory);
 
         return FAILURE;
     }
@@ -89,28 +91,27 @@ int get_request(char *url)
      * Do something nice with it!
      */
 
-        DEBUG_PRINT("%lu bytes retrieved\n", (unsigned long)chunk.size);
+        DEBUG_PRINT("%lu bytes retrieved\n", (unsigned long)ms->size);
     }
 
     /* cleanup curl stuff */
     curl_easy_cleanup(curl_handle);
 
-    free(chunk.memory);
+    free(ms->memory);
 
-    /* we're done with libcurl, so clean it up */
-    curl_global_cleanup();
+
 
     return SUCCESS;
 }
 
-int post_request(char *url, char *data)
+int post_request(char *url, MemoryStruct *ms)
 {
+    if (!url || !ms) return FAILURE;
+    
     CURL *curl;
     CURLcode res;
 
-    /* In windows, this will init the winsock stuff */
-    curl_global_init(CURL_GLOBAL_ALL);
-
+    
     /* get a curl handle */
     curl = curl_easy_init();
     if (curl)
@@ -120,7 +121,7 @@ int post_request(char *url, char *data)
        data. */
         curl_easy_setopt(curl, CURLOPT_URL, (char *)url);
         /* Now specify the POST data */
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, ms->memory);
 
         /* Perform the request, res will get the return code */
         res = curl_easy_perform(curl);
@@ -129,11 +130,12 @@ int post_request(char *url, char *data)
         {
             DEBUG_ERROR("curl_easy_perform() failed: %s\n",
                         curl_easy_strerror(res));
+            /* always cleanup */
+            curl_easy_cleanup(curl);
             return FAILURE;
         }
         /* always cleanup */
         curl_easy_cleanup(curl);
     }
-    curl_global_cleanup();
     return SUCCESS;
 }
