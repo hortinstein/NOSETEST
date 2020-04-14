@@ -9,6 +9,7 @@ extern "C"
 #include "curlwrapper.h"
 #include "debug.h"
 #include "encryption.h"
+#include "listwrapper.h"
 }
 
 void num_teardownss(void *n)

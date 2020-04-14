@@ -80,7 +80,7 @@ $(TEST_EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.cpp
 	@echo building test binary...
-	$(CC) $(CFLAGS)  -fprofile-arcs -DDEBUG -ftest-coverage -o $@ $< obj/monocypher.o obj/encryption.o obj/ll.o -lcurl obj/curlwrapper.o -lcurl  -L /usr/local/lib -l $(GOOGLE_TEST_LIB)  
+	$(CC) $(CFLAGS)  -fprofile-arcs -DDEBUG -ftest-coverage -o $@ $< obj/monocypher.o obj/encryption.o obj/listwrapper.o obj/ll.o -lcurl obj/curlwrapper.o -lcurl  -L /usr/local/lib -l $(GOOGLE_TEST_LIB)  
 
 test: $(EXEC)
 	@echo running tests...

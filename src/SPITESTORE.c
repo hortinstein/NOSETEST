@@ -8,6 +8,7 @@ extern "C"
 #include "debug.h"
 #include "datatypes.h"
 #include "curlwrapper.h"
+#include "listwrapper.h"
 }
 
 int main()
