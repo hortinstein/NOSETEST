@@ -311,6 +311,26 @@ TEST(enc_lib, enc_dec)
     ///!_SOLUTION
 }
 
+//checks to see if the key generates correctly
+TEST(ll_wrap, push_pop)
+{
+    
+    const char * array = "thistest";
+    SerializableList sl;
+    MemoryStruct ms;
+    MemoryStruct ms2;
+    ms2.memory = NULL;
+    ms.memory = (uint8_t * ) array;
+    ms.size = sizeof("thistest");
+
+    ll_init(&sl);
+    ll_push(&sl,&ms);
+    ll_pop(&ms2,&sl);
+
+    free(ms2.memory);
+    ll_free(&sl);
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
