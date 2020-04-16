@@ -325,8 +325,10 @@ TEST(ll_wrap, push_pop)
 
     ll_init(&sl);
     ll_push(&sl,&ms);
-    ll_pop(&ms2,&sl);
 
+    ll_pop(&ms2,&sl);
+    ASSERT_STREQ((const char *)ms.memory, (const char *)ms2.memory);
+   
     free(ms2.memory);
     ll_free(&sl);
 }
