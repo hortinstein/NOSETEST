@@ -198,6 +198,8 @@ TEST(curl_lib, get_invalid)
 TEST(curl_lib, get)
 {
     MemoryStruct ms;
+    ms.memory=NULL;
+    ms.size = 0;
     wrapper_curl_init();
     ASSERT_EQ(SUCCESS,get_request(&ms,(char *)PP_URL));
     wrapper_curl_free();

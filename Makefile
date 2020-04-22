@@ -88,10 +88,12 @@ test: $(EXEC)
 
 cov_unit: clean all 
 	@valgrind --leak-check=yes --tool=memcheck ./$(BINDIR)/$(TEST_EXEC)
+	@echo running code coverage analysis
 	@gcovr
 
 cov_int: clean all 
 	@valgrind --leak-check=yes --tool=memcheck ./$(BINDIR)/$(EXEC)
+	@echo running code coverage analysis
 	@gcovr
 
 

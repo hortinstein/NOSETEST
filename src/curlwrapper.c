@@ -60,7 +60,7 @@ int get_request(MemoryStruct * ms, char *url)
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 
     /* we pass our 'chunk' struct to the callback function */
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&ms);
+    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)ms);
 
     /* some servers don't like requests that are made without a user-agent
      field, so we provide one */
