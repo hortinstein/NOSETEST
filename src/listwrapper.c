@@ -142,9 +142,13 @@ fail:
 }
 
 int ll_deserialize(SerializableList * l, MemoryStruct * ms){
-    if (!l || !ms || !ms->memory) return FAILURE;
-
-
-
+    if (!l || !ms || !ms->memory) {
+        DEBUG_PRINT("argument error");
+        return FAILURE;
+    } 
     return SUCCESS;
+
+fail:
+    free (ms->memory);
+    return FAILURE;
 }
