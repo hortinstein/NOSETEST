@@ -5,15 +5,25 @@
 
 #include "listwrapper.h"
 
-void teardown(void *n)
-{
-    free (((MemoryStruct*)n)->memory);
-    free (n);
+#define MEM_HDR_SIZE sizeof(MemoryStruct) - sizeof(uint8_t*)
+
+void teardown(void *n){
+    if (!n) {
+        DEBUG_PRINT("argument error");
+        
+    } else {
+
+        free (((MemoryStruct*)n)->memory);
+        free (n);
+    }
 }
 
 
 int ll_init(SerializableList * l){
-    if (!l) return FAILURE;
+    if (!l) {
+        DEBUG_PRINT("argument error");
+        return FAILURE;
+    } 
     l->total_size = 0;
     l->list = ll_new(teardown);
 
@@ -21,7 +31,10 @@ int ll_init(SerializableList * l){
 }
 
 int ll_free(SerializableList * l){
-    if (!l) return FAILURE;
+    if (!l) {
+        DEBUG_PRINT("argument error");
+        return FAILURE;
+    } 
 
     ll_delete(l->list);
     return SUCCESS;
@@ -29,13 +42,16 @@ int ll_free(SerializableList * l){
 
 
 int ll_pop(MemoryStruct * ms, SerializableList * l){
-    if (!l || !l->list || !ms || ms->memory) return FAILURE;
+    if (!l || !l->list || !ms || ms->memory) {
+        DEBUG_PRINT("argument error");
+        return FAILURE;
+    } 
     
     MemoryStruct * temp_ms = NULL;
     temp_ms = (MemoryStruct*)ll_get_first(l->list);
     
     if (NULL == temp_ms){
-        DEBUG_PRINT("ll_pop failed\n");
+        DEBUG_PRINT("ll_pop failed, ll get first failure\n");
         goto fail;
     }
 
@@ -51,7 +67,10 @@ fail:
 
 
 int ll_push(SerializableList * l, MemoryStruct * ms){
-    if (!l || !l->list || !ms || !ms->memory) return FAILURE;
+    if (!l || !l->list || !ms || !ms->memory) {
+        DEBUG_PRINT("argument error");
+        return FAILURE;
+    } 
 
     //DANGER DANGER
     ///todo talk about testing here
@@ -75,14 +94,56 @@ fail:
 }
 
 int ll_serialize(MemoryStruct * ms, SerializableList * l){
-    if (!l || ms) return FAILURE;
+    if (!l || !ms || ms->memory) {
+        DEBUG_PRINT("argument error");
+        return FAILURE;
+    } 
+    int num_items = l->list->len;
 
+    MemoryStruct * temp_ms_node = NULL;
+    
+    int dest_mem_i = 0;
+    ms->size = l->total_size;
+
+    //allocates extra memory for the size of each element
+    ms->size += MEM_HDR_SIZE * num_items;
+    
+    //allocate a contigous block of memory to store the serialized array
+    ms->memory = (uint8_t*) malloc(ms->size);
+    if (ms->memory == NULL){
+        DEBUG_PRINT("malloc failed");
+        goto fail;
+    } 
+
+    
+    for (int i=0;i<num_items;i++){
+        temp_ms_node = (MemoryStruct*) ll_get_n(l->list,i);
+        //if retrieving the node fails, abort
+        if (temp_ms_node == NULL){
+            DEBUG_PRINT("node retreival failed");
+            goto fail;
+        }
+
+        //copies the header into the contigious array
+        memcpy(ms->memory + dest_mem_i,temp_ms_node,MEM_HDR_SIZE);
+        dest_mem_i += MEM_HDR_SIZE;
+
+        //copies the memory into the contigious array
+        memcpy(ms->memory + dest_mem_i,temp_ms_node->memory,temp_ms_node->size);
+        dest_mem_i += temp_ms_node->size;
+       
+    }
 
     return SUCCESS;
+
+fail:
+    free (ms->memory);
+    return FAILURE;
 }
 
 int ll_deserialize(SerializableList * l, MemoryStruct * ms){
-    if (!l || ms) return FAILURE;
+    if (!l || !ms || !ms->memory) return FAILURE;
+
 
 
     return SUCCESS;

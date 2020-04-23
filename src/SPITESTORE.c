@@ -9,9 +9,11 @@ extern "C"
 #include "datatypes.h"
 #include "curlwrapper.h"
 #include "listwrapper.h"
+#include "encryption.h"
 }
 
 int main()
 {
     DEBUG_PRINT("SPITESTORE\n");
+    
 }
