@@ -4,6 +4,10 @@
 #include "ll.h"
 #include "datatypes.h"
 #include "debug.h"
+extern "C"{
+
+    #include "binn.h"
+}
 
 // serializable linked list
 typedef struct _SerializableList

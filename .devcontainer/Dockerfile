@@ -14,6 +14,13 @@ RUN cd monocypher-3.0.0 && make install
 RUN pip3 install --upgrade pip
 RUN pip3 install pymonocypher
 
+RUN git clone https://github.com/liteserver/binn
+RUN cd binn
+RUN make
+RUN sudo make install
+
+RUN git clone https://github.com/meeron/pybinn.git && cd pybinn && pip3 install .
+
 # Get the gtest suite
 RUN git clone -q https://github.com/google/googletest.git /googletest \
   && mkdir -p /googletest/build \

@@ -3,6 +3,12 @@
 #include <stdlib.h>
 #include <time.h>
 
+extern "C"{
+
+    #include "binn.h"
+}
+
+
 #include "listwrapper.h"
 
 #define MEM_HDR_SIZE sizeof(MemoryStruct) - sizeof(uint8_t*)
@@ -71,6 +77,7 @@ int ll_push(SerializableList * l, MemoryStruct * ms){
         DEBUG_PRINT("argument error");
         return FAILURE;
     } 
+    DEBUG_PRINT("adding element");
 
     //DANGER DANGER
     ///todo talk about testing here
@@ -99,21 +106,20 @@ int ll_serialize(MemoryStruct * ms, SerializableList * l){
         return FAILURE;
     } 
     int num_items = l->list->len;
-
+    DEBUG_PRINT("serializing %d items",num_items);
     MemoryStruct * temp_ms_node = NULL;
     
-    int dest_mem_i = 0;
-    ms->size = l->total_size;
+    binn *obj;
 
-    //allocates extra memory for the size of each element
-    ms->size += MEM_HDR_SIZE * num_items;
-    
-    //allocate a contigous block of memory to store the serialized array
-    ms->memory = (uint8_t*) malloc(ms->size);
-    if (ms->memory == NULL){
-        DEBUG_PRINT("malloc failed");
+    // create a new object
+    obj = binn_list();
+    if (obj == NULL){
+        DEBUG_PRINT("binn list alloc failed");
         goto fail;
-    } 
+    }
+
+    // add values to it
+    //binn_list_add_int32(obj, num_items);
 
     
     for (int i=0;i<num_items;i++){
@@ -123,20 +129,31 @@ int ll_serialize(MemoryStruct * ms, SerializableList * l){
             DEBUG_PRINT("node retreival failed");
             goto fail;
         }
-
-        //copies the header into the contigious array
-        memcpy(ms->memory + dest_mem_i,temp_ms_node,MEM_HDR_SIZE);
-        dest_mem_i += MEM_HDR_SIZE;
-
-        //copies the memory into the contigious array
-        memcpy(ms->memory + dest_mem_i,temp_ms_node->memory,temp_ms_node->size);
-        dest_mem_i += temp_ms_node->size;
+        if (!binn_list_add_blob( obj, 
+                            temp_ms_node->memory,
+                            temp_ms_node->size)){
+            DEBUG_PRINT("adding the element to the list failed");
+            goto fail;
+        }
+    
        
     }
 
+    ms->memory = (uint8_t*)malloc(binn_size(obj));
+    if (NULL == ms->memory) 
+    {
+        DEBUG_PRINT("malloc failed");
+        goto fail;
+    }
+    ms->size = binn_size(obj);
+    DEBUG_PRINT("copying %d bytes",ms->size);
+    memcpy(ms->memory,binn_ptr(obj),ms->size);
+    
+    binn_free(obj);    
     return SUCCESS;
 
 fail:
+    binn_free(obj);
     free (ms->memory);
     return FAILURE;
 }
@@ -146,9 +163,36 @@ int ll_deserialize(SerializableList * l, MemoryStruct * ms){
         DEBUG_PRINT("argument error");
         return FAILURE;
     } 
-    return SUCCESS;
+    int i, count;
+    void *obj = (binn_struct*)ms->memory;
+    
+    MemoryStruct ms_temp;
+    binn value; //dest value for the item before insertion into list
+    
+    count = binn_count((binn_struct*)ms->memory);
+    
+    DEBUG_PRINT("copying %d items into new list",count);
 
+    if (ll_init(l)== FAILURE){
+        DEBUG_PRINT("list creation failed");
+        goto fail;
+    }
+
+    
+    for(i=1; i<=count; i++) {
+        if (binn_list_get_value(obj, 5, &value) == FALSE){
+            DEBUG_PRINT("retrieving item failed");
+            goto fail;
+        }
+        ms_temp.memory = (uint8_t*)value.ptr;
+        ms_temp.size = value.size;
+        DEBUG_PRINT("%s, %d",(char*)value.ptr,value.size);
+        ll_push(l,&ms_temp);
+    }
+
+    return SUCCESS;
 fail:
-    free (ms->memory);
+    ll_delete(l->list);
     return FAILURE;
+
 }

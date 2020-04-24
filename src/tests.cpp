@@ -5,11 +5,12 @@ using std::string;
 
 extern "C"
 {
-#include "ll.h"
-#include "curlwrapper.h"
-#include "debug.h"
-#include "encryption.h"
-#include "listwrapper.h"
+    #include "ll.h"
+    #include "curlwrapper.h"
+    #include "debug.h"
+    #include "encryption.h"
+    #include "listwrapper.h"
+    #include "binn.h"
 }
 
 void num_teardownss(void *n)
@@ -312,7 +313,7 @@ TEST(enc_lib, enc_dec)
     ///!_SOLUTION
 }
 
-//checks to see if the key generates correctly
+//checks to see if the list wrapper works correctly generates correctly
 TEST(ll_wrap, push_pop)
 {
     
@@ -332,6 +333,57 @@ TEST(ll_wrap, push_pop)
    
     free(ms2.memory);
     ll_free(&sl);
+}
+
+//checks to see if the list wrapper works correctly generates correctly
+TEST(ll_wrap, serialize_deserialize)
+{
+    
+    const char * array = "thistest";
+    SerializableList sl;
+    SerializableList sl2;
+    SerializableList sl3;
+    SerializableList sl4;
+    
+    MemoryStruct ms;
+    MemoryStruct ms2;
+    MemoryStruct ms3;
+    MemoryStruct ms4;
+    
+    ms2.memory = NULL;
+    ms3.memory = NULL;
+    ms4.memory = NULL;
+    
+    ms.memory = (uint8_t * ) array;
+    ms.size = sizeof("thistest");
+
+    ll_init(&sl);
+    ll_push(&sl,&ms);
+    ll_push(&sl,&ms);
+    ll_push(&sl,&ms);
+    ll_push(&sl,&ms);
+    ll_push(&sl,&ms);
+
+    
+
+    ll_serialize(&ms2,&sl);
+    ll_deserialize(&sl2,&ms2);
+    DEBUG_PRINT("sl2 size: %d",sl2.list->len);
+    ll_serialize(&ms3,&sl2);
+    ll_deserialize(&sl3,&ms3);
+    DEBUG_PRINT("sl3 size: %d",sl2.list->len);
+    ll_serialize(&ms4,&sl3);
+    ll_deserialize(&sl4,&ms4);
+   DEBUG_PRINT("sl4 size: %d",sl2.list->len);
+    
+    free(ms2.memory);
+    free(ms3.memory);
+    free(ms4.memory);
+
+    ll_free(&sl);
+    ll_free(&sl2);
+    ll_free(&sl3);
+    ll_free(&sl4);
 }
 
 int main(int argc, char **argv)

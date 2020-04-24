@@ -27,14 +27,14 @@ CC = g++
 # `Werror`  - makes all warnings errors
 # `Wextra`  - enables some extra warning flags that `all` doesn't set
 # `Wunused` - complains about any variable, function, label, etc. not being used
-CFLAGS = -Wall -Werror -Wextra -DDEBUG -Wunused -Wno-pointer-arith -g -ggdb -lcurl
+CFLAGS = -Wall -Werror -Wextra -DDEBUG -Wunused -Wno-pointer-arith -g -ggdb -lcurl 
 # `g`           - generate source code debug info
 # `std=`        - sets the language standard, in this case c99
 # `_GNU_SOURCE` - is a macro that tells the compiler to use rsome gnu functions
 # `pthred`      - adds support for multithreading with the pthreads lib (for preprocessor
 #                 and linker)
 # `O3`          - the level of optimization
-CFLAGS += -g -D_GNU_SOURCE -pthread  -I $(GOOGLE_TEST_INCLUDE)
+CFLAGS += -g -D_GNU_SOURCE -pthread  -I $(GOOGLE_TEST_INCLUDE) 
 # `-I` - adds directory to the system search path (for include files)
 CFLAGS += -I"$(INCDIR)" 
 
@@ -55,7 +55,7 @@ test_exec: $(TEST_EXEC)
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(OBJDIR)
 	@echo building object files...
-	$(CC) $(CFLAGS) -lcurl -static -static-libgcc -fprofile-arcs -ftest-coverage -o $@ -c $<  -lcurl 
+	$(CC) $(CFLAGS) -lcurl -static -static-libgcc -fprofile-arcs -ftest-coverage -o $@ -c $< -lcurl 
 
 # combiles the object files necessary for linking
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)
@@ -80,7 +80,7 @@ $(TEST_EXEC): %: $(BINDIR) $(BINDIR)/%
 # had to do this so it wouldn't recompile each time
 $(BINDIR)/%: $(SRCDIR)/%.cpp
 	@echo building test binary...
-	$(CC) $(CFLAGS)  -fprofile-arcs -DDEBUG -ftest-coverage -o $@ $< obj/monocypher.o obj/encryption.o obj/listwrapper.o obj/ll.o -lcurl obj/curlwrapper.o -lcurl  -L /usr/local/lib -l $(GOOGLE_TEST_LIB)  
+	$(CC) $(CFLAGS)  -fprofile-arcs -DDEBUG -ftest-coverage -o $@ $< obj/monocypher.o obj/encryption.o obj/listwrapper.o obj/ll.o -lcurl obj/curlwrapper.o -lcurl -lbinn -L /usr/local/lib -l $(GOOGLE_TEST_LIB)  
 
 test: $(EXEC)
 	@echo running tests...
