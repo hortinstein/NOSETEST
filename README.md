@@ -28,7 +28,9 @@ Course Notes:
 - unit
 - integration
 - code coverage
-- end to end
+- end to end (system)
+- acceptance
+- opsec
 - platform (maybe)
 - regression (maybe)
 - stylistic - writing testable code keep things on the stack as much as you can

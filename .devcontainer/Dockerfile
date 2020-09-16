@@ -17,9 +17,7 @@ RUN pip3 install --upgrade pip
 RUN pip3 install pymonocypher
 
 RUN git clone https://github.com/liteserver/binn
-RUN cd binn
-RUN make
-RUN sudo make install
+RUN cd /binn/ && make && make install
 
 RUN git clone https://github.com/meeron/pybinn.git && cd pybinn && pip3 install .
 
