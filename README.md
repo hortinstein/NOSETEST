@@ -52,3 +52,7 @@ Course Notes:
 
 #### encryption
 - 
+
+#### building exercise into a bootable OS
+- https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
+- https://github.com/iximiuz/docker-to-linux
