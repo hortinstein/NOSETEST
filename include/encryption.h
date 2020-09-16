@@ -6,6 +6,10 @@
 #include "datatypes.h"
 #include "debug.h"
 
+extern "C" unsigned char * base64_encode(const unsigned char *src, size_t len,
+			      size_t *out_len);
+extern "C" unsigned char * base64_decode(const unsigned char *src, size_t len,
+			      size_t *out_len);
 extern "C" void db_init(DecryptedBytes *db);
 extern "C" void db_free(DecryptedBytes *db);
 extern "C" void eb_init(EncryptedBytes *eb);

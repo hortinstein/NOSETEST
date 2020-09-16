@@ -13,6 +13,9 @@ Send a POST request:
 import argparse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+#imports the python encryption library
+import monocypher
+
 class S(BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)

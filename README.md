@@ -41,7 +41,10 @@ Course Notes:
 - CURL - does not fail without initing or freeing, but might cross platform?  This is specific to winsock...i think
 - cover hard to reach coverage tests: https://stackoverflow.com/questions/2592107/how-do-i-mock-memory-allocation-failures
 - cleanup errors, how do i structure clean code where I need to clean up the same things
-
+- debug print 
+- debug error
+- binary data substitutes
+- memory structs, and obj or data type wrappers for testing
 #### curl
 - what happens if the data is not NULL delimited
 
