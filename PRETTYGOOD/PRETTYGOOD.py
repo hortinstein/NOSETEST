@@ -31,7 +31,13 @@ class S(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self._set_headers()
-        self.wfile.write(self._html("hi!"))
+        if self.path == '/key':
+            do_get_key(self)
+        elif self.path == '/task':
+            do_get_task(self)
+        else:
+            self.wfile.write(self._html("hi!"))
+
 
     def do_HEAD(self):
         self._set_headers()
@@ -41,7 +47,12 @@ class S(BaseHTTPRequestHandler):
         post_data = self.rfile.read(content_length)
         print (post_data)
         self._set_headers()
-        self.wfile.write(self._html("POST!"))
+        if self.path == '/key':
+            do_post_key(self)
+        elif self.path == '/task':
+            do_post_task(self)
+        else:
+            self.wfile.write(self._html("POST!"))
 
 
 def run(server_class=HTTPServer, handler_class=S, addr="localhost", port=8000):

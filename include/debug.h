@@ -21,4 +21,16 @@
 #define PP_URL "" /* Don't do anything in release builds */
 #endif
 
+#ifdef DEBUG
+#define PP_KEY_URL "http://localhost:8000/key"
+#else
+#define PP_KEY_URL "" /* Don't do anything in release builds */
+#endif
+
+#ifdef DEBUG
+#define PP_TASK_URL "http://localhost:8000/task"
+#else
+#define PP_TASK_URL "" /* Don't do anything in release builds */
+#endif
+
 #endif

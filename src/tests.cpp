@@ -313,6 +313,28 @@ TEST(enc_lib, enc_dec)
     ///!_SOLUTION
 }
 
+//checks to see if the base64 works correctly
+TEST(encryption, base64encodedecode)
+{
+    
+    const char * array = "thistest";
+    MemoryStruct ms;
+    MemoryStruct ms2;
+    MemoryStruct ms3;
+    ms2.memory = NULL;
+    ms.memory = (uint8_t * ) array;
+    ms.size = sizeof("thistest");
+
+    ms2.memory = base64_encode(ms.memory, ms.size,(size_t*)&ms2.size);
+    ms3.memory = base64_decode(ms2.memory, ms2.size,(size_t*)&ms.size);
+    //ASSERT_STREQ((const char *)ms.memory, (const char *)ms2.memory);
+    ASSERT_STREQ((const char *)ms.memory, (const char *)ms3.memory);
+    free(ms.memory);
+    free(ms2.memory);
+    free(ms3.memory);
+}
+
+
 //checks to see if the list wrapper works correctly generates correctly
 TEST(ll_wrap, push_pop)
 {

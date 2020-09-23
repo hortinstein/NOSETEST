@@ -18,13 +18,12 @@ int send_keymat(localKeys * km){
     MemoryStruct b64_km;
     if (!km) goto fail;
     
-
     //put it intp
     //convert the binary to ascii
     b64_km.memory = base64_encode((const unsigned char *)km,sizeof(localKeys),(size_t*)&b64_km.size);
     DEBUG_PRINT("%s",b64_km.memory);
 
-    post_request((char *)PP_URL, &b64_km);
+    post_request((char *)PP_KEY_URL, &b64_km);
 
     //TODO take out here
     free(b64_km.memory);
@@ -39,7 +38,8 @@ int recv_keymat(keyMat * km,localKeys *lk){
     
     MemoryStruct ms;
     wrapper_curl_init();
-    get_request(&ms,(char *)"");
+    get_request(&ms,(char *)PP_KEY_URL);
+
     wrapper_curl_free();
 
     return SUCCESS;
@@ -47,17 +47,20 @@ fail:
     return FAILURE;
 }
 
-
-
 int main()
 {
     localKeys me;
-    //keyMat session;  
-
-    //generates my local keys
-    gen_keys(&me);
-    send_keymat(&me);
+    keyMat session;  
 
     DEBUG_PRINT("SPITESTORE\n");
+ 
+    //generates my local keys
+    gen_keys(&me);
+
+    //send my keymat
+    send_keymat(&me);
+    
+    //recv their keymat
+    recv_keymat(&session,&me);
     
 }
