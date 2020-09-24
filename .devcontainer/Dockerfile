@@ -16,6 +16,7 @@ RUN cd monocypher-3.0.0 && make install
 RUN pip3 install --upgrade pip
 RUN pip3 install pymonocypher 
 RUN pip3 install numpy
+RUN pip install pytest-httpserver
 
 RUN git clone https://github.com/liteserver/binn
 RUN cd /binn/ && make && make install

@@ -24,15 +24,9 @@ class TestTasks(unittest.TestCase):
 
     def test_get_task(self):
         random = np.random.RandomState(seed=1)
-        for i in range(10):
-            length = random.randint(1, 4096)
-            key = bytes(random.randint(0, 256, 32, dtype=np.uint8))
-            nonce = bytes(random.randint(0, 256, 24, dtype=np.uint8))
-            msg = bytes(random.randint(0, 256, length, dtype=np.uint8))
-            mac, c = monocypher.lock(key, nonce, msg)
-            msg2 = monocypher.unlock(key, nonce, mac, c)
-            self.assertNotEqual(msg, c)
-            self.assertEqual(msg, msg2)
+        
+
+
 
 class S(BaseHTTPRequestHandler):
         
@@ -52,8 +46,8 @@ class S(BaseHTTPRequestHandler):
     def do_get_key(self):
         print("GET key")
 
-    def do_post_key(self):
-        print("POST key")
+    def do_post_key(self,key):
+        print("POST key: ",self.)
 
     def do_get_task(self):
         print("GET task")
