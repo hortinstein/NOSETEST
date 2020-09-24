@@ -45,6 +45,7 @@ Course Notes:
 - debug error
 - binary data substitutes
 - memory structs, and obj or data type wrappers for testing
+- compiler flags
 #### curl
 - what happens if the data is not NULL delimited
 

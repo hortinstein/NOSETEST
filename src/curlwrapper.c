@@ -97,7 +97,9 @@ int get_request(MemoryStruct * ms, char *url)
     /* cleanup curl stuff */
     curl_easy_cleanup(curl_handle);
 
-    free(ms->memory);
+    
+    //TODO add in
+    //free(ms->memory);
 
 
 

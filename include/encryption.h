@@ -18,5 +18,5 @@ extern "C" int gen_keys(LocalKeys *km);
 extern "C" int derive_session_key(KeyMat *km);
 extern "C" int enc(EncryptedBytes *eb, KeyMat *km, DecryptedBytes *db);
 extern "C" int dec(DecryptedBytes *db, KeyMat *km, EncryptedBytes *eb);
-
+extern "C" void print_key(uint8_t*k,char * name);
 #endif
