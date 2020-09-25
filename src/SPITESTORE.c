@@ -66,12 +66,20 @@ fail:
 
 //this function recieves the key material from the server 
 int get_task(keyMat * km){
-
+if (!km) goto fail;
+   
+    return SUCCESS;
+fail:
+    return FAILURE;
 }
 
 //this function recieves the key material from the server 
 int send_result(keyMat * km){
-    
+if (!km) goto fail;
+
+    return SUCCESS;
+fail:
+    return FAILURE;
 }
 
 int main()
