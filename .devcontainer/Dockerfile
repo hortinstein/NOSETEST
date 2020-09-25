@@ -13,7 +13,7 @@ RUN tar -xzf monocypher-3.0.0.tar.gz
 
 RUN cd monocypher-3.0.0 && make 
 RUN cd monocypher-3.0.0 && make install
-RUN pip3 install --upgrade pip3
+
 RUN pip3 install pymonocypher
 RUN pip3 install numpy
 RUN pip3 install pytest-httpserver
