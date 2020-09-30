@@ -22,7 +22,7 @@ typedef struct __attribute__((__packed__)) taskBytes
     uint8_t task_num;
     uint32_t len;                  /* length of the args */ 
     uint8_t *task_args;            /* Secret message */
-} EncryptedBytes;
+} TaskBytes;
 
 typedef struct __attribute__((__packed__)) encryptedBytes
 {

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
+#include <unistd.h>
 
 extern "C"
 {
@@ -100,8 +101,13 @@ int main()
     //recv their keymat
     recv_keymat(&session,&me);
     
-    get_task(&session);
+    //task loop
+    while (1){
+        sleep(10);
+        get_task(&session);
 
+        send_result(&session);
+    }
     wrapper_curl_free();
    
 }

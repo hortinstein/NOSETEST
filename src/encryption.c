@@ -232,7 +232,7 @@ void db_free(DecryptedBytes *db)
 }
 
 void print_key(uint8_t*k,char * name){
-	printf("%s key: ",name);
+	DEBUG_PRINT("%s key: ",name);
     for (int i = 0; i < KEY_LEN; i++) {
         printf("%02X", (unsigned char)k[i]);
     }

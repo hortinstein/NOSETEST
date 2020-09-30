@@ -18,7 +18,10 @@ import monocypher
 import unittest
 import base64
 
-import struct
+#imports the task queue that will be used by the test server
+import threading, queue
+q = queue.Queue()
+
 
 #encryption globals
 KEY_LEN = 32
@@ -29,23 +32,6 @@ SHARED_KEY = ""
 
 assert(len(PRIV_KEY) == 32)
 assert(len(PUB_KEY) == 32)
-
-def encrypyt_wrapper(plain_msg):
-    nonce = bytes(random.randint(0, 256, NONCE_LEN, dtype=np.uint8))
-    mac, c = monocypher.lock(SHARED_KEY, nonce, msg)
-    #sender pub key [unnessecary], nonce, mac, len of cyber text, cipher text
-    struct.pack("{}c{}c{}cLs".format(KEY_len,NONCE_LEN,MAC_LEN),PUB_KEY,nonce,mac,len(c),c)
-
-def decrypt_wrapper(enc_msg):
-    their_key, nonce, mac, clen, enc_msg = struct.unpack("{}c{}c{}cLs".format(KEY_len,NONCE_LEN,MAC_LEN))
-    msg = monocypher.unlock(SHARED_KEY, nonce, mac, enc_msg)
-    print msg
-
-class TestTasks(unittest.TestCase):
-
-    def test_get_task(self):
-        random = np.random.RandomState(seed=1)
-
 
 class S(BaseHTTPRequestHandler):
 
@@ -83,7 +69,6 @@ class S(BaseHTTPRequestHandler):
     def do_post_task_resp(self):
         print("POST task: ",resp)
 
-
     #routing for get requests
     def do_GET(self):
         self._set_headers()
@@ -120,6 +105,11 @@ def run(server_class=HTTPServer, handler_class=S, addr="localhost", port=8000):
     httpd.serve_forever()
 
 
+class TestSPITESTORE(unittest.TestCase):
+
+    def test_echo(self):
+        print("echo")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run a simple HTTP server")
     parser.add_argument(
@@ -136,4 +126,10 @@ if __name__ == "__main__":
         help="Specify the port on which the server listens",
     )
     args = parser.parse_args()
-    run(addr=args.listen, port=args.port)
+    http_server_thread = threading.Thread(name='http_server',
+                                          target = run,
+                                          )#args=(args.listen,args.port))
+    http_server_thread.start()                    
+
+    # turn-on the worker thread
+    unittest.main()
