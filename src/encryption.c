@@ -239,6 +239,31 @@ void print_key(uint8_t*k,char * name){
     printf("\n");
 }
 
+void print_nonce(uint8_t*k){
+	DEBUG_PRINT("NONCE: ");    
+	for (int i = 0; i < NONCE_LEN; i++) {
+        printf("%02X", (unsigned char)k[i]);
+    }
+    printf("\n");
+}
+
+void print_mac(uint8_t*k){
+	DEBUG_PRINT("MAC: ");
+    for (int i = 0; i < MAC_LEN; i++) {
+        printf("%02X", (unsigned char)k[i]);
+    }
+    printf("\n");
+}
+
+void print_bytes(uint8_t*k,int len){
+	DEBUG_PRINT("BYTES: ");
+    for (int i = 0; i < len; i++) {
+        printf("%02X", (unsigned char)k[i]);
+    }
+    printf("\n");
+}
+
+
 int gen_keys(LocalKeys *km)
 {
     if (!km)
@@ -286,8 +311,11 @@ int dec(DecryptedBytes *db, KeyMat *km, EncryptedBytes *eb)
 
     db->plain_text = (uint8_t *)malloc(eb->len);
     db->len = eb->len;
-
+	print_nonce(eb->nonce);
+	print_mac(eb->mac);
+	print_bytes(eb->cypher_text,eb->len);
+	
     crypto_unlock(db->plain_text, km->shared_key, eb->nonce, eb->mac, eb->cypher_text, eb->len);
-
+	DEBUG_PRINT("decrypted %s", db->plain_text);
     return SUCCESS;
 }

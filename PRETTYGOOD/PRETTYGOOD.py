@@ -13,6 +13,8 @@ Send a POST request:
 import argparse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+from data_utils import *
+
 #imports the python encryption library
 import monocypher
 import unittest
@@ -54,19 +56,30 @@ class S(BaseHTTPRequestHandler):
 
     #this sets the remote clients public key and allows for the shared session key
     def do_post_key(self,key):
+        global SHARED_KEY
         print("POST b64 key: ",key)
         their_key = bytes(base64.b64decode(key))
         print(len(their_key), their_key)
         print("POST decoded key: ",their_key)
-        SHARED_KEY = monocypher.key_exchange(PRIV_KEY,their_key)
+        SHARED_KEY = bytes(monocypher.key_exchange(PRIV_KEY,their_key))
+        
         print("shared key: ",SHARED_KEY.hex())
 
     #this provides a task or the client
     def do_get_task(self):
+        global SHARED_KEY
         print("GET task")
+        item = q.get()
+        print ("got item: ",item)
+        enc = encrypyt_wrapper(SHARED_KEY, PUB_KEY, item)
+        print("enc bytes: ",enc.hex())
+        b64 = base64.b64encode(enc)
+        print("sending {} bytes: {}".format(len(b64),b64))
+        self.wfile.write(b64) #sends servers public key
 
     #this gets a response based off of a task
     def do_post_task_resp(self):
+        global SHARED_KEY
         print("POST task: ",resp)
 
     #routing for get requests
@@ -106,9 +119,17 @@ def run(server_class=HTTPServer, handler_class=S, addr="localhost", port=8000):
 
 
 class TestSPITESTORE(unittest.TestCase):
-
     def test_echo(self):
         print("echo")
+        q.put("test echo1\0")
+    def test_echo(self):
+        print("echo")
+        q.put("test echo2\0")
+    def test_echo(self):
+        print("echo")
+        q.put("test echo3\0")
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run a simple HTTP server")

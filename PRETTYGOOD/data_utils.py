@@ -34,12 +34,12 @@ class serializable_list():
     list = []
 
 
-def encrypyt_wrapper(SHARED_KEY, plaintext):
+def encrypyt_wrapper(SHARED_KEY, PUB_KEY,plaintext):
     random = np.random.RandomState(seed=1)
     nonce = bytes(random.randint(0, 256, NONCE_LEN, dtype=np.uint8))
     mac, c = monocypher.lock(SHARED_KEY, nonce, bytes(plaintext,encoding='utf8'))
-    print ("encrypt: SHARED_KEY{}\nNONCE {}\nMAC {}".format(SHARED_KEY,nonce,mac))
-    print (len(c),c)
+    print ("encrypt: SHARED_KEY {}\nNONCE {}\nMAC {}".format(SHARED_KEY.hex(),nonce.hex(),mac.hex()))
+    print (len(c),c.hex())
     #sender pub key [unnessecary], nonce, mac, len of cyber text, cipher text
     
     return struct.pack("{}s{}s{}sL{}s".format(KEY_LEN,NONCE_LEN,MAC_LEN,len(c)),PUB_KEY,nonce,mac,len(c),c)
@@ -47,18 +47,13 @@ def encrypyt_wrapper(SHARED_KEY, plaintext):
 def decrypt_wrapper(SHARED_KEY,enc_msg):
     OFFSET = NONCE_LEN+KEY_LEN+MAC_LEN+8
     their_key, nonce, mac, clen, cipher = struct.unpack("{}s{}s{}sL{}s".format(KEY_LEN,NONCE_LEN,MAC_LEN,(len(enc_msg)-OFFSET)),enc_msg)
-    print ("decrypt: SHARED_KEY{}\nNONCE {}\nMAC {}".format(SHARED_KEY,nonce,mac))
+    print ("decrypt: SHARED_KEY {}\nNONCE {}\nMAC {}".format(SHARED_KEY.hex(),nonce.hex(),mac.hex()))
     print (clen,cipher)
     msg = monocypher.unlock(SHARED_KEY, nonce, mac, cipher)
     print(msg)
     return msg
 
-
-
-
 class TestMonocypher(unittest.TestCase):
-
-
     def test_key_exchange_random(self):
         a_private_secret, a_public_secret = monocypher.generate_key_exchange_key_pair()
         b_private_secret, b_public_secret = monocypher.generate_key_exchange_key_pair()
@@ -70,7 +65,7 @@ class TestMonocypher(unittest.TestCase):
         #CODE CAVING
         self.assertEqual(dumb_message,
                          decrypt_wrapper(a_shared_secret,
-                                         encrypyt_wrapper(b_shared_secret,
+                                         encrypyt_wrapper(b_shared_secret, a_public_secret,
                                                           dumb_message)).decode()
                         )
 
