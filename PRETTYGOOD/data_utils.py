@@ -17,22 +17,66 @@ KEY_LEN = 32
 NONCE_LEN = 24
 MAC_LEN = 16
 
+###############################################################################
+# Task Wrappers
+###############################################################################
 
 #these are the task numbers!
 ECHO = 0
+TIMEOUT = 1
+EXIT = 2
 
-class task():
-    num = 0
-    args = ""
-    def serialize(self):
-        return ""
+class TaskEcho():
+    res =""
+    # init method or constructor    
+    def __init__(self, echo_string):   
+        self.echo_string = echo_string
+        #TODO test something here
+        self.echo_string += '\0'
 
-    def deserialize(self, binary):
-        return ""
+    def deserialize_response(self,res):
+        #5 bytes is the size of the header
+        self.task_num, size, self.res = struct.unpack("=HH{}s".format(len(red[4:])),res)
+    
+    def serialize_task(self):
+        return struct.pack("=HH{}s".format(len(self.echo_string)),
+                            ECHO,
+                            len(self.echo_string),
+                            self.echo_string.encode('utf-8'))
+    
+    def return_res(self):
+        return ECHO, self.res
 
-class serializable_list():
-    list = []
+class TaskExit():
+    res =""
+    def deserialize_response(res):
+        #5 bytes is the size of the header
+        self.task_num, size, self.res = struct.unpack("=HH{}s".format(len(red[4:])),res)
+    
+    def serialize_task(self):
+        return struct.pack("=HH",EXIT,0)
+    
+    def return_res(self):
+        return EXIT, self.res
 
+class TaskTimeout():
+    res =""
+    def __init__(self, timeout):   
+        self.timeout = timeout
+    # init method or constructor    
+    def deserialize_response(self,res):
+        #5 bytes is the size of the header
+        self.task_num, size, self.res = struct.unpack("=HH{}s".format(len(red[4:])),res)
+    
+    def serialize_task(self):
+        return struct.pack("=HHH",TIMEOUT,4,self.timeout)
+    
+    def return_res(self):
+        return self.task_nun, self.res
+
+###############################################################################
+# Encrpytion Wrappers
+###############################################################################
 
 def encrypyt_wrapper(SHARED_KEY, PUB_KEY,plaintext):
     random = np.random.RandomState(seed=1)
@@ -53,7 +97,10 @@ def decrypt_wrapper(SHARED_KEY,enc_msg):
     print(msg)
     return msg
 
-class TestMonocypher(unittest.TestCase):
+###############################################################################
+# Encrpytion Wrappers testing
+###############################################################################
+class TestEncWrappers(unittest.TestCase):
     def test_key_exchange_random(self):
         a_private_secret, a_public_secret = monocypher.generate_key_exchange_key_pair()
         b_private_secret, b_public_secret = monocypher.generate_key_exchange_key_pair()

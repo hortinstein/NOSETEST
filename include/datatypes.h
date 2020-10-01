@@ -19,9 +19,9 @@ typedef struct  memoryStruct
 
 typedef struct __attribute__((__packed__)) taskBytes
 {
-    uint8_t task_num;
-    uint32_t len;                  /* length of the args */ 
-    uint8_t *task_args;            /* Secret message */
+    uint16_t task_num;
+    uint16_t len;                  /* length of the args */ 
+    uint8_t task_args[1024];            /* TODO Fix this */
 } TaskBytes;
 
 typedef struct __attribute__((__packed__)) encryptedBytes

@@ -22,8 +22,15 @@ import base64
 
 #imports the task queue that will be used by the test server
 import threading, queue
-q = queue.Queue()
 
+q_task = queue.Queue()
+q_resp = queue.Queue()
+
+
+#these are the task numbers!
+ECHO = 0
+TIMEOUT = 1
+EXIT = 2
 
 #encryption globals
 KEY_LEN = 32
@@ -34,6 +41,10 @@ SHARED_KEY = ""
 
 assert(len(PRIV_KEY) == 32)
 assert(len(PUB_KEY) == 32)
+
+###############################################################################
+# Task Server
+###############################################################################
 
 class S(BaseHTTPRequestHandler):
 
@@ -67,11 +78,12 @@ class S(BaseHTTPRequestHandler):
 
     #this provides a task or the client
     def do_get_task(self):
+        global q
         global SHARED_KEY
         print("GET task")
-        item = q.get()
+        item = q_task.get()
         print ("got item: ",item)
-        enc = encrypyt_wrapper(SHARED_KEY, PUB_KEY, item)
+        enc = encrypyt_wrapper(SHARED_KEY, PUB_KEY, str(item.serialize_task()))
         print("enc bytes: ",enc.hex())
         b64 = base64.b64encode(enc)
         print("sending {} bytes: {}".format(len(b64),b64))
@@ -79,8 +91,36 @@ class S(BaseHTTPRequestHandler):
 
     #this gets a response based off of a task
     def do_post_task_resp(self):
+        global q
         global SHARED_KEY
-        print("POST task: ",resp)
+        content_length = int(self.headers['Content-Length'])
+        post_data = self.rfile.read(content_length)
+        print("POST task: ",post_data.hex())
+
+        dec = decrypt_wrapper(SHARED_KEY,post_data)
+        
+        #get the task num to check type of response
+        task_num = struct.unpack("L",dec)
+
+        #check the type of response and enqueue a resp object
+        if (ECHO == task_num):
+            print("recieved ECHO resposne")
+            task = TaskEcho("")
+            task.deserialize_response(dec)
+            q_resp.put(task)
+        elif (TIMEOUT == task_num):
+            print("recieved TIMEOUT resposne")
+            task = TaskTimeout()
+            task.deserialize_response(dec)
+            q_resp.put(task)
+        elif (EXIT == task_num):
+            print("recieved EXIT resposne")
+            task = TaskExit()
+            task.deserialize_response(dec)
+            q_resp.put(task)
+        else:
+            print("unknown response!")    
+        self.wfile.write(self._html("POST!"))
 
     #routing for get requests
     def do_GET(self):
@@ -117,19 +157,31 @@ def run(server_class=HTTPServer, handler_class=S, addr="localhost", port=8000):
     print(f"Starting httpd server on {addr}:{port}")
     httpd.serve_forever()
 
+###############################################################################
+# Task Server tests
+###############################################################################
 
 class TestSPITESTORE(unittest.TestCase):
     def test_echo(self):
+        print("starting echo test")
+        my_echo_string = "testing my echo string" 
+        q_task.put(TaskEcho(my_echo_string))
+        print("awaiting echo test")
+        task_resp = q_resp.get()
+        num, res = task_resp.return_res()
+        self.assertEqual(ECHO,num)
+        self.assertEqual(my_echo_string,res)
+    
+    def test_timeout(self):
         print("echo")
-        q.put("test echo1\0")
-    def test_echo(self):
+
+    def test_exit(self):
         print("echo")
-        q.put("test echo2\0")
-    def test_echo(self):
-        print("echo")
-        q.put("test echo3\0")
 
 
+###############################################################################
+# Main
+###############################################################################
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run a simple HTTP server")

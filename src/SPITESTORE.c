@@ -14,6 +14,10 @@ extern "C"
 #include "encryption.h"
 }
 
+const unsigned int TASK_ECHO = 0;
+const unsigned int TASK_TIMEOUT = 1;
+const unsigned int TASK_EXIT = 2;
+
 int EXIT = 0;
 int TIMEOUT = 10;
 
@@ -68,15 +72,15 @@ fail:
 }
 
 //this function recieves the key material from the server 
-int get_task(keyMat * km,DecryptedBytes* db){
+int get_task(keyMat * km,TaskBytes* tb){
     MemoryStruct b64_tb;
     MemoryStruct enc_tb;
-
+    DecryptedBytes db;
     EncryptedBytes eb;
 
     int offset = 0;
 
-    if (!km || !db) goto fail;
+    if (!km || !tb) goto fail;
     
     b64_tb.memory = NULL;
 
@@ -93,21 +97,28 @@ int get_task(keyMat * km,DecryptedBytes* db){
     //unbase 64 it
     enc_tb.memory = base64_decode((const unsigned char *)b64_tb.memory,(size_t)b64_tb.size,(size_t*)&enc_tb.size);  
     
-    print_bytes(enc_tb.memory,enc_tb.size);
-    //sets the pointer to the right offset...this is ugly as sin
-    //((EncryptedBytes*)enc_tb.memory)->cypher_text = (uint8_t*)(((void*)&enc_tb + (sizeof(EncryptedBytes))));  
+    //print_bytes(enc_tb.memory,enc_tb.size);
 
+    //copies enc meta data to the struct
     offset = sizeof(EncryptedBytes) - sizeof(uint8_t*)+4;
     memcpy((void*)&eb,enc_tb.memory,offset);
 
+    //copies the ciphertext
     eb.cypher_text =(uint8_t*) malloc(eb.len);
     memcpy(eb.cypher_text,enc_tb.memory+offset,eb.len);
 
     //decrypt it
-    dec(db, km, &eb);
+    dec(&db, km, &eb);
 
-    DEBUG_PRINT("tasking: %s",(char*)db->plain_text);
+    DEBUG_PRINT("tasking: %s",(char*)db.plain_text);
 
+    memset(tb,'\0',sizeof(TaskBytes));
+    memcpy(tb,db.plain_text,db.len);
+    DEBUG_PRINT("tasking: %s",(char*)tb);
+
+
+    free(eb.cypher_text);
+    free(db.plain_text);
     free(b64_tb.memory);
     free(enc_tb.memory);
     
@@ -117,22 +128,36 @@ fail:
 }
 
 //this function recieves the key material from the server 
-int send_result(keyMat * km, DecryptedBytes* db){
-    if (!km || !db) goto fail;
+int send_result(keyMat * km, TaskBytes* tb){
     MemoryStruct b64_tb;
 
     EncryptedBytes eb;
+    DecryptedBytes db;
     
+    MemoryStruct eb_inline;
+
+    int offset = 0;
+    if (!km || !tb) goto fail;
+
+    db.len = sizeof(taskBytes)+tb->len;
+    db.plain_text = (uint8_t*)tb;
 
     //encrypt it 
-    enc(&eb, km, db);
+    enc(&eb, km, &db);
+
+    offset = sizeof(EncryptedBytes) - sizeof(uint8_t*)+4;
+    memcpy(&eb_inline,(void*)&eb,offset);
+    eb_inline.size = eb.len + sizeof(EncryptedBytes);
+    eb_inline.memory = (uint8_t*) malloc(eb_inline.size);
+    memcpy(eb_inline.memory,&eb,offset);
+    memcpy(eb_inline.memory+offset,eb.cypher_text,eb.len);
 
     //base64 it
-    b64_tb.memory = base64_encode((const unsigned char *)&eb,eb.len,(size_t*)&b64_tb.size);
+    b64_tb.memory = base64_encode((const unsigned char *)&eb_inline,eb_inline.size,(size_t*)&b64_tb.size);
     DEBUG_PRINT("%s",b64_tb.memory);
 
-    post_request((char *)PP_KEY_URL, &b64_tb);
-
+    post_request((char *)PP_TASK_URL, &b64_tb);
+    DEBUG_PRINT("success");
     //TODO take out here
     free(b64_tb.memory);
     return SUCCESS;
@@ -140,30 +165,34 @@ fail:
     return FAILURE;
 }
 
-int TASK_echo(taskBytes *tb){
-    if (!tb) goto fail;
+int handleTaskEcho(taskBytes *res,taskBytes *tb){
+    DEBUG_PRINT("echo");
+    if (!tb || !res) goto fail;
+        res = (taskBytes*)malloc(sizeof(taskBytes)+tb->len);
+        memcpy(res,tb,sizeof(taskBytes)+tb->len);
+        return SUCCESS;
+    fail:
+        return FAILURE;
+}
+
+int handleTaskTimeout(taskBytes *res,taskBytes *tb){
+    DEBUG_PRINT("timeout");
+    if (!tb || !res) goto fail;
 
         return SUCCESS;
     fail:
         return FAILURE;
 }
 
-int TASK_timeout(taskBytes *tb){
-    if (!tb) goto fail;
-
-        return SUCCESS;
-    fail:
-        return FAILURE;
-    
-}
-
-int TASK_exit(taskBytes *tb){
-    if (!tb) goto fail;
-
+int handleTaskExit(taskBytes *res,taskBytes *tb){
+    DEBUG_PRINT("exit");
+    if (!tb || !res) goto fail;
+        EXIT = 1;
         return SUCCESS;
     fail:
         return FAILURE;
 }
+
 
 int main()
 {
@@ -171,8 +200,8 @@ int main()
     
     localKeys me;
     keyMat session;  
-    DecryptedBytes task;
-    //DecryptedBytes response;
+    TaskBytes task;
+    //TaskBytes response;
 
     DEBUG_PRINT("SPITESTORE\n");
  
@@ -190,10 +219,23 @@ int main()
 
         DEBUG_PRINT("checking for tasking\n");
         if (FAILURE == get_task(&session,&task)) goto next;
-
-        //send_result(&session,&response);
-        //DEBUG_PRINT("sleeping %d seconds\n",TIMEOUT);
+        DEBUG_PRINT("tasking: %s",(char*)&task);
+        DEBUG_PRINT("%hu",task.task_num);
+        //  switch(task.task_num){
+        //     case TASK_ECHO:
+        //         handleTaskEcho(&response,&task);
+        //         break;
+        //     case TASK_TIMEOUT:
+        //         handleTaskTimeout(&response,&task);
+        //         break;
+        //     case TASK_EXIT:
+        //         handleTaskExit(&response,&task);
+        //         break;
+        // } 
+       
+        // send_result(&session,&response);
 next:
+        DEBUG_PRINT("sleeping %d seconds\n",TIMEOUT);
         sleep(TIMEOUT);
         
     }

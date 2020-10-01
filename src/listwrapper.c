@@ -180,7 +180,7 @@ int ll_deserialize(SerializableList * l, MemoryStruct * ms){
 
     
     for(i=1; i<=count; i++) {
-        if (binn_list_get_value(obj, 5, &value) == FALSE){
+        if (binn_list_get_value(obj, i, &value) == FALSE){
             DEBUG_PRINT("retrieving item failed");
             goto fail;
         }

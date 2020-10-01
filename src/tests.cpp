@@ -396,7 +396,7 @@ TEST(ll_wrap, serialize_deserialize)
     DEBUG_PRINT("sl3 size: %d",sl2.list->len);
     ll_serialize(&ms4,&sl3);
     ll_deserialize(&sl4,&ms4);
-   DEBUG_PRINT("sl4 size: %d",sl2.list->len);
+    DEBUG_PRINT("sl4 size: %d",sl2.list->len);
     
     free(ms2.memory);
     free(ms3.memory);

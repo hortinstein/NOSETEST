@@ -316,6 +316,6 @@ int dec(DecryptedBytes *db, KeyMat *km, EncryptedBytes *eb)
 	print_bytes(eb->cypher_text,eb->len);
 	
     crypto_unlock(db->plain_text, km->shared_key, eb->nonce, eb->mac, eb->cypher_text, eb->len);
-	DEBUG_PRINT("decrypted %s", db->plain_text);
+	//DEBUG_PRINT("decrypted %s", db->plain_text);
     return SUCCESS;
 }
