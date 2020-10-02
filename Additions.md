@@ -21,6 +21,19 @@
 - Create some malformed data on either the python system tests or the C unit tests to find and fix the errors
 - 
 # Class Outline
+- Environment Setup
 - Introduction
--- What is software testing
--- Why should I care here
+  - What is software testing
+  - What are the high level different types of testing
+  - Why should I care here
+  - What does a good testing ecosystem look like
+- Basic Python Testing
+- NOSETEST
+  - Environment Setup
+  - Scenario Introduction
+  - Reproducible Builds
+  - Dependency Management
+  - Code Coverage
+  - Valgrind
+  - GUNIT 
+  
