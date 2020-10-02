@@ -31,9 +31,24 @@
 - NOSETEST
   - Environment Setup
   - Scenario Introduction
+  - Enc Wrapper Test exercise (python)
   - Reproducible Builds
   - Dependency Management
-  - Code Coverage
-  - Valgrind
+  - Code Coverage intro
+  - Valgrind intro
+  - Linters?
+  - Static code analysis
+  - Makefile instrumentation
   - GUNIT 
-  
+  - LL bad testing example
+  - How do we test it better exercise
+  - Hard to reach and hard to test functions
+  - Monocypher test example (c)
+  - Curl Tests (c)
+  - Serializable list tests (c)
+  - Encryptionwrapper tests (c) 
+  - Base64 tests (c)
+  - Integration/System testing 
+  - test runner overview
+  - discussions on alternate approaches
+  - 
