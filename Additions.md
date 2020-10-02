@@ -20,3 +20,7 @@
 - Rewrite how the keying works...lets discuss
 - Create some malformed data on either the python system tests or the C unit tests to find and fix the errors
 - 
+# Class Outline
+- Introduction
+-- What is software testing
+-- Why should I care here
