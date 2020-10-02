@@ -1,3 +1,13 @@
+### Steps 
+# write code
+# lint code 
+# (Unit/integration/System) test code locally
+# Push to a repo
+# static analysis (security?) 
+# build server kicks off
+# tests run against variety of environments/versions/platforms ie Travis
+# code review before merging to master (LOL)
+
 # Ideas to add to NOSETEST
 - Test out the list serialization and deserialization libraries
 - Utilize the Serializable linked list and write a parser for it in Python and test it...hint it might be broken
