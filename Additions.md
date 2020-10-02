@@ -1,12 +1,12 @@
-### Steps 
-# write code
-# lint code 
-# (Unit/integration/System) test code locally
-# Push to a repo
-# static analysis (security?) 
-# build server kicks off
-# tests run against variety of environments/versions/platforms ie Travis
-# code review before merging to master (LOL)
+# Steps 
+- write code
+- lint code 
+- (Unit/integration/System/Benchmark/) test code locally
+- Push to a repo
+- static analysis (security?) 
+- build server kicks off
+- tests run against variety of environments/versions/platforms ie Travis
+- code review before merging to master (LOL)
 
 # Ideas to add to NOSETEST
 - Test out the list serialization and deserialization libraries
