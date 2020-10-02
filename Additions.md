@@ -12,10 +12,11 @@
 - Test out the list serialization and deserialization libraries
 - Utilize the Serializable linked list and write a parser for it in Python and test it...hint it might be broken
 - Refactor the TLV type structs to variable length structs where the variable length data is stored at the end
-- Change encryption wrappers to work with this
+- Change encryption wrappers to work with above
 - Add return codes to the response values pased back 
 - Add in error code checking for all the places it's not checked (alot)
 - Implement new tasks
 - Write a cleaner implementaion of how python correlates the task and the response...maybe task ids to correlate responses with outstanding tasks?
-- Rewrite how the keying works
-- Create some malformed data on either the python side or the C side find and fix the errors
+- Rewrite how the keying works...lets discuss
+- Create some malformed data on either the python system tests or the C unit tests to find and fix the errors
+- 
