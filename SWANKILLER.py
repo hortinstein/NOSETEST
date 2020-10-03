@@ -31,6 +31,7 @@ print('walk_dir = ' + walk_dir)
 print('walk_dir (absolute) = ' + os.path.abspath(walk_dir))
 
 for root, subdirs, files in os.walk(walk_dir):
+    if (".git" in root): continue
     print('--\nroot = ' + root)
     
     for subdir in subdirs:
@@ -39,7 +40,10 @@ for root, subdirs, files in os.walk(walk_dir):
     for filename in files:
         file_path = os.path.join(root, filename)
 
-        if ("__pycache__" in file_path):
+        if ("__pycache__" in file_path) or \
+           (".gc" in filename) or \
+           ("SWANKILLER" in filename) or \
+           (".o" in filename):
             continue
         print('\t- file %s (full path: %s)' % (filename, file_path))
         CUT = False
@@ -55,14 +59,14 @@ for root, subdirs, files in os.walk(walk_dir):
                     
                     print('{}#END CODE HERE\n'.format(startwhites), end='')
                 elif CUT == True:
-                    solution_dict[file_path] += "\n {} {}".format(fileinput.filelineno(),line) 
+                    solution_dict[file_path] += "{} {}".format(fileinput.filelineno(),line) 
                     print('{}\n'.format(startwhites), end='')
                 elif "#!CUT_START" in line: 
                     CUT = True
-                    solution_dict[file_path] += '```\n{}#START CODE HERE\n'.format(startwhites)
+                    solution_dict[file_path] += '``` python\n{}#START CODE HERE\n'.format(startwhites)
                     print('{}#START CODE HERE\n'.format(startwhites), end='')
                 elif "#!COMMENT" in line:
-                    solution_dict[file_path] += '{}'.format(line.replace("#!COMMENT","")) 
+                    solution_dict[file_path] += '{} {}\n'.format(fileinput.filelineno(),line.replace("#!COMMENT","")) 
                     print('{}'.format(line.replace("#!COMMENT","#")), end='')
                 else:
                     print('{}'.format(line), end='') 
@@ -72,17 +76,19 @@ for root, subdirs, files in os.walk(walk_dir):
                     CUT = False
                     solution_dict[file_path] += '{}//END CODE HERE\n```\n'.format(startwhites)
                 elif CUT == True:
-                    solution_dict[file_path] += "\n {} {}".format(fileinput.filelineno(),line) 
+                    solution_dict[file_path] += "{} {}".format(fileinput.filelineno(),line) 
                     print('{}\n'.format(startwhites), end='')
                 elif "//!CUT_START" in line: 
                     CUT = True
-                    solution_dict[file_path] += '```\n{}//START CODE HERE\n'.format(startwhites)
+                    solution_dict[file_path] += '``` c\n{}//START CODE HERE\n'.format(startwhites)
                     print('{}//START CODE HERE\n'.format(startwhites), end='')
                 elif "//!COMMENT" in line:
-                    solution_dict[file_path] += '{}'.format(line.replace("//!COMMENT","")) 
+                    solution_dict[file_path] += '{} {}\n'.format(fileinput.filelineno(),line.replace("//!COMMENT","")) 
                     print('{}'.format(line.replace("//!COMMENT","//")), end='')
                 else:
                     print('{}'.format(line), end='') 
+            else: 
+                print('{}'.format(line), end='') 
 
 f = open("{}/SOLUTION.md".format(walk_dir), "w")
 for item in solution_dict:

@@ -1,3 +1,4 @@
+//!COMMENT THIS IS A BEAUTIFULL LIBRARY
 // Monocypher version 3.0.0
 //
 // This file is dual-licensed.  Choose whichever licence you want from

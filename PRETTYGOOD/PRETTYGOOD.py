@@ -167,6 +167,9 @@ def run(server_class=HTTPServer, handler_class=S, addr="localhost", port=8000):
 
 class TestSPITESTORE(unittest.TestCase):
     def test_echo(self):
+        #!COMMENT just use the solution on this one, but lets talk better ways
+        #!COMMENT i got really lazy...
+        #!CUT_START
         print("starting echo test")
         my_echo_string = "testing my echo string" 
         q_task.put(TaskEcho(my_echo_string))
@@ -176,12 +179,13 @@ class TestSPITESTORE(unittest.TestCase):
         num, res = task_resp.return_res()
         self.assertEqual(ECHO,num)
         self.assertEqual(my_echo_string,res)
-    
+        #!CUT_END 
+
     def test_timeout(self):
-        print("echo")
+        print("timeout")
 
     def test_exit(self):
-        print("echo")
+        print("exit")
 
 
 ###############################################################################

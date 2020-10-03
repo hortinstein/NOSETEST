@@ -17,6 +17,8 @@ typedef struct  memoryStruct
     uint8_t * memory;
 } MemoryStruct;
 
+//!COMMENT play around and see if you can get attribute packing to break
+//!COMMENT PRETTYGOOD
 typedef struct __attribute__((__packed__)) taskBytes
 {
     uint16_t task_num;

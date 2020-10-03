@@ -290,13 +290,10 @@ int enc(EncryptedBytes *eb, KeyMat *km, DecryptedBytes *db)
     DEBUG_PRINT("encrypyting %u bytes...", db->len);
 
     eb->cypher_text = (uint8_t *)malloc(db->len);
-    ///!_SKELETON
-    //!_ //forgetting something?
-    ///!_SKELETON
-
-    ///!_SOLUTION
+    
+	//!COMMENT if we take this out...what happens
+	//!COMMENT how could you write an additional test for that?
     gen_randon_nonce(eb);
-    ///!_SOLUTION
 
     crypto_lock(eb->mac, eb->cypher_text, km->shared_key, eb->nonce, db->plain_text, db->len);
 	eb->len = db->len;

@@ -1,3 +1,9 @@
+
+#!COMMENT Lets talk about make files
+#!COMMENT not how bad mine is, but how good yours should be
+#!COMMENT make sure it's well documented, put proper instrumentation in
+#!COMMENT TURN ON ALL The warnings.  Trust me totally worth it. 
+
 SRCDIR = src
 OBJDIR = obj
 BINDIR = bin

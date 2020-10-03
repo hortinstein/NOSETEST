@@ -242,12 +242,9 @@ int ll_insert_n(ll_t *list, void *val, int n)
  */
 int ll_insert_first(ll_t *list, void *val)
 {
-    ///!_SKELETON
-    ///!_SKELETON
-    ///!_SOLUTION
+    //!COMMENT take this out per instructions
     if (NULL == list)
         return -1;
-    ///!_SOLUTION
     return ll_insert_n(list, val, 0);
 }
 
@@ -317,18 +314,12 @@ int ll_remove_n(ll_t *list, int n)
  */
 int ll_remove_first(ll_t *list)
 {
-    ///!_SKELETON
-    //!_ int * lol = NULL;
-    //!_ lol = (int*) malloc(100);
-    //!_ lol[1] = '0';
-    ///!_SKELETON
-
-    ///!_SOLUTION
-    //int * lol = NULL;
-    //lol = (int*) malloc(100);
-    //lol[1] = '0';
-    ///!_SOLUTION
-
+    //!COMMENT add this here to see valgrind does 
+    //!COMMENT int * lol = NULL;
+    //!COMMENT lol = (int*) malloc(100);
+    //!COMMENT lol[1] = '0';
+    
+    
     return ll_remove_n(list, 0);
 }
 

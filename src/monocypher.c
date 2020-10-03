@@ -1,3 +1,5 @@
+//!COMMENT What do you like about this code
+//!COMMENT what do you hate about it
 // Monocypher version 3.0.0
 //
 // This file is dual-licensed.  Choose whichever licence you want from
