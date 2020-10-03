@@ -81,7 +81,7 @@ class TaskTimeout():
 def encrypyt_wrapper(SHARED_KEY, PUB_KEY,plaintext):
     random = np.random.RandomState(seed=1)
     nonce = bytes(random.randint(0, 256, NONCE_LEN, dtype=np.uint8))
-    mac, c = monocypher.lock(SHARED_KEY, nonce, bytes(plaintext,encoding='utf8'))
+    mac, c = monocypher.lock(SHARED_KEY, nonce, plaintext)
     print ("encrypt: SHARED_KEY {}\nNONCE {}\nMAC {}".format(SHARED_KEY.hex(),nonce.hex(),mac.hex()))
     print (len(c),c.hex())
     #sender pub key [unnessecary], nonce, mac, len of cyber text, cipher text
@@ -107,13 +107,13 @@ class TestEncWrappers(unittest.TestCase):
         b_shared_secret = monocypher.key_exchange(b_private_secret, a_public_secret)
         a_shared_secret = monocypher.key_exchange(a_private_secret, b_public_secret)
         self.assertEqual(a_shared_secret, b_shared_secret)
-        dumb_message = "this is my message"
+        dumb_message = bytes("this is my message",encoding='utf8')
 
         #CODE CAVING
         self.assertEqual(dumb_message,
                          decrypt_wrapper(a_shared_secret,
                                          encrypyt_wrapper(b_shared_secret, a_public_secret,
-                                                          dumb_message)).decode()
+                                                          dumb_message))
                         )
 
 if __name__ == "__main__":

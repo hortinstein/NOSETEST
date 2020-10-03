@@ -78,29 +78,30 @@ class S(BaseHTTPRequestHandler):
 
     #this provides a task or the client
     def do_get_task(self):
-        global q
+
         global SHARED_KEY
         print("GET task")
         item = q_task.get()
+        q_task.task_done()
         print ("got item: ",item)
-        enc = encrypyt_wrapper(SHARED_KEY, PUB_KEY, str(item.serialize_task()))
+        enc = encrypyt_wrapper(SHARED_KEY, PUB_KEY, item.serialize_task())
         print("enc bytes: ",enc.hex())
         b64 = base64.b64encode(enc)
         print("sending {} bytes: {}".format(len(b64),b64))
         self.wfile.write(b64) #sends servers public key
 
     #this gets a response based off of a task
-    def do_post_task_resp(self):
-        global q
+    def do_post_task_resp(self,resp):
+
         global SHARED_KEY
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
-        print("POST task: ",post_data.hex())
+        print("POST task: ",resp.hex())
 
-        dec = decrypt_wrapper(SHARED_KEY,post_data)
+        dec = decrypt_wrapper(SHARED_KEY,resp)
         
         #get the task num to check type of response
-        task_num = struct.unpack("L",dec)
+        task_num = struct.unpack("H",dec)
 
         #check the type of response and enqueue a resp object
         if (ECHO == task_num):
@@ -139,12 +140,12 @@ class S(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
-        print (post_data)
+        print (self.path,post_data)
         self._set_headers()
         if self.path == '/key':
             self.do_post_key(post_data.strip())
         elif self.path == '/task':
-            self.do_post_task_resp()
+            self.do_post_task_resp(post_data.strip())
         else:
             self.wfile.write(self._html("POST!"))
 
@@ -161,6 +162,8 @@ def run(server_class=HTTPServer, handler_class=S, addr="localhost", port=8000):
 # Task Server tests
 ###############################################################################
 
+#LOL this is a terrible way to do this
+
 class TestSPITESTORE(unittest.TestCase):
     def test_echo(self):
         print("starting echo test")
@@ -168,6 +171,7 @@ class TestSPITESTORE(unittest.TestCase):
         q_task.put(TaskEcho(my_echo_string))
         print("awaiting echo test")
         task_resp = q_resp.get()
+        q.task_done()
         num, res = task_resp.return_res()
         self.assertEqual(ECHO,num)
         self.assertEqual(my_echo_string,res)

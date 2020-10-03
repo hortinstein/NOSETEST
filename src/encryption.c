@@ -285,7 +285,7 @@ int derive_session_key(KeyMat *km)
 
 int enc(EncryptedBytes *eb, KeyMat *km, DecryptedBytes *db)
 {
-    if (!eb || !km || !db || eb->cypher_text != NULL)
+    if (!eb || !km || !db || !db->len)
         return FAILURE;
     DEBUG_PRINT("encrypyting %u bytes...", db->len);
 
