@@ -140,22 +140,23 @@ int send_result(keyMat * km, TaskBytes* tb){
     int offset = 0;
     if (!km || !tb) goto fail;
 
-    db.len = 32+tb->len;
+    db.len = tb->len+16;
     db.plain_text = (uint8_t*)tb;
-    
+
     DEBUG_PRINT("encrypting result");
     //encrypt it 
     enc(&eb, km, &db);
     DEBUG_PRINT("sequencing bytes");
-    offset = sizeof(EncryptedBytes) - sizeof(uint8_t*)+4;
-    memcpy(&eb_inline,(void*)&eb,offset);
-    eb_inline.size = eb.len + sizeof(EncryptedBytes);
+    
+    offset = 80;
+    eb_inline.size = eb.len + offset;
     eb_inline.memory = (uint8_t*) malloc(eb_inline.size);
     memcpy(eb_inline.memory,&eb,offset);
     memcpy(eb_inline.memory+offset,eb.cypher_text,eb.len);
+    print_bytes(eb_inline.memory,eb_inline.size);
     DEBUG_PRINT("base 64ing");
     //base64 it
-    b64_tb.memory = base64_encode((const unsigned char *)&eb_inline,eb_inline.size,(size_t*)&b64_tb.size);
+    b64_tb.memory = base64_encode((unsigned char *)eb_inline.memory,eb_inline.size,(size_t*)&b64_tb.size);
     DEBUG_PRINT("%s",b64_tb.memory);
 
     post_request((char *)PP_TASK_URL, &b64_tb);
@@ -170,8 +171,9 @@ fail:
 int handleTaskEcho(taskBytes *res,taskBytes *tb){
     DEBUG_PRINT("echo");
     if (!tb || !res || !tb->len) goto fail;
-        res = (taskBytes*)malloc(sizeof(taskBytes)+tb->len);
-        memcpy(res,tb,sizeof(taskBytes)+tb->len);
+        memcpy(res,tb,sizeof(taskBytes));
+        DEBUG_PRINT("ECHO Task:%s",tb->task_args);
+            DEBUG_PRINT("ECHO Response:%s",res->task_args);
         return SUCCESS;
     fail:
         return FAILURE;
@@ -205,6 +207,12 @@ int main()
     TaskBytes task;
     TaskBytes response;
 
+    task.task_num = 0;
+    response.task_num = 0;
+    task.len = 0;
+    response.len = 0;
+    memset(task.task_args,'\0',1024);
+    memset(response.task_args,'\0',1024);
     DEBUG_PRINT("SPITESTORE\n");
  
     //generates my local keys

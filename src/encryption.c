@@ -285,7 +285,7 @@ int derive_session_key(KeyMat *km)
 
 int enc(EncryptedBytes *eb, KeyMat *km, DecryptedBytes *db)
 {
-    if (!eb || !km || !db || !db->len)
+    if (!eb || !km || !db)
         return FAILURE;
     DEBUG_PRINT("encrypyting %u bytes...", db->len);
 
@@ -299,7 +299,11 @@ int enc(EncryptedBytes *eb, KeyMat *km, DecryptedBytes *db)
     ///!_SOLUTION
 
     crypto_lock(eb->mac, eb->cypher_text, km->shared_key, eb->nonce, db->plain_text, db->len);
-    eb->len = db->len;
+	eb->len = db->len;
+	print_nonce(eb->nonce);
+	print_mac(eb->mac);
+	print_bytes(eb->cypher_text,eb->len);
+	
     return SUCCESS;
 }
 

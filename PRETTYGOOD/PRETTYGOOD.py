@@ -94,15 +94,15 @@ class S(BaseHTTPRequestHandler):
     def do_post_task_resp(self,resp):
 
         global SHARED_KEY
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
+
         print("POST task: ",resp.hex())
-
-        dec = decrypt_wrapper(SHARED_KEY,resp)
-        
+        ctext = bytes(base64.b64decode(resp))
+        print (ctext.hex())
+        dec = decrypt_wrapper(SHARED_KEY,ctext)
+        print ("decrypted bin",dec)
         #get the task num to check type of response
-        task_num = struct.unpack("H",dec)
-
+        task_num = struct.unpack("H",dec[:2])
+        task_num = task_num[0]
         #check the type of response and enqueue a resp object
         if (ECHO == task_num):
             print("recieved ECHO resposne")
@@ -145,6 +145,7 @@ class S(BaseHTTPRequestHandler):
         if self.path == '/key':
             self.do_post_key(post_data.strip())
         elif self.path == '/task':
+            print("RECV RESP")
             self.do_post_task_resp(post_data.strip())
         else:
             self.wfile.write(self._html("POST!"))
@@ -171,7 +172,7 @@ class TestSPITESTORE(unittest.TestCase):
         q_task.put(TaskEcho(my_echo_string))
         print("awaiting echo test")
         task_resp = q_resp.get()
-        q.task_done()
+        q_resp.task_done()
         num, res = task_resp.return_res()
         self.assertEqual(ECHO,num)
         self.assertEqual(my_echo_string,res)

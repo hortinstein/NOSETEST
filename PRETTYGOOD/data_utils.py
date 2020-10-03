@@ -36,7 +36,7 @@ class TaskEcho():
 
     def deserialize_response(self,res):
         #5 bytes is the size of the header
-        self.task_num, size, self.res = struct.unpack("=HH{}s".format(len(red[4:])),res)
+        self.task_num, size, self.res = struct.unpack("=HH{}s".format(len(res[4:])),res)
     
     def serialize_task(self):
         return struct.pack("=HH{}s".format(len(self.echo_string)),
@@ -51,7 +51,7 @@ class TaskExit():
     res =""
     def deserialize_response(res):
         #5 bytes is the size of the header
-        self.task_num, size, self.res = struct.unpack("=HH{}s".format(len(red[4:])),res)
+        self.task_num, size, self.res = struct.unpack("=HH{}s".format(len(res[4:])),res)
     
     def serialize_task(self):
         return struct.pack("=HH",EXIT,0)
@@ -66,7 +66,7 @@ class TaskTimeout():
     # init method or constructor    
     def deserialize_response(self,res):
         #5 bytes is the size of the header
-        self.task_num, size, self.res = struct.unpack("=HH{}s".format(len(red[4:])),res)
+        self.task_num, size, self.res = struct.unpack("=HH{}s".format(len(res[4:])),res)
     
     def serialize_task(self):
         return struct.pack("=HHH",TIMEOUT,4,self.timeout)
