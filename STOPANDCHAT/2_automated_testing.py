@@ -1,4 +1,4 @@
-
+#!COMMENT Warmup Exercise #2
 # Writing tests in this way is okay for a simple check, but what if more than one fails? This is where test runners come in. 
 # The test runner is a special application designed for running tests, checking the output, 
 # and giving you tools for debugging and diagnosing tests and applications.

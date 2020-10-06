@@ -1,3 +1,4 @@
+#!COMMENT Warmup Exercise #3
 # Writing Your First Test
 # Let’s bring together what you’ve learned so far and, instead of testing the built-in sum() function, 
 # test a simple implementation of the same requirement.

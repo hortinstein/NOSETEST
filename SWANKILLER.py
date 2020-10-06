@@ -90,8 +90,32 @@ for root, subdirs, files in os.walk(walk_dir):
             else: 
                 print('{}'.format(line), end='') 
 
+#this creates the solution file
 f = open("{}/SOLUTION.md".format(walk_dir), "w")
-for item in solution_dict:
+
+ordered_dict = [
+    "student_NOSETEST/STOPANDCHAT/1_basic_testing.py",
+    "student_NOSETEST/STOPANDCHAT/2_automated_testing.py",
+    "student_NOSETEST/STOPANDCHAT/3_writing_first_test.py",
+    "student_NOSETEST/STOPANDCHAT/4_understanding_testoutput.py",
+    "student_NOSETEST/PRETTYGOOD/test/encryption_test.py",
+    "student_NOSETEST/PRETTYGOOD/data_utils.py",
+    "student_NOSETEST/src/tests.cpp",
+    "student_NOSETEST/src/monocypher.c",
+    "student_NOSETEST/src/SPITESTORE.c",
+    "student_NOSETEST/src/ll.c",
+    "student_NOSETEST/src/encryption.c",
+    "student_NOSETEST/PRETTYGOOD/PRETTYGOOD.py",
+]
+
+f.write("\n\n")
+
+for item in ordered_dict:
+    if solution_dict[item] == "":
+        continue
+    f.write("- [{}](#{})\n".format(item,item))
+
+for item in ordered_dict:
     if solution_dict[item] == "":
         continue
     

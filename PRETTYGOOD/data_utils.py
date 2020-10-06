@@ -102,6 +102,8 @@ def decrypt_wrapper(SHARED_KEY,enc_msg):
 ###############################################################################
 class TestEncWrappers(unittest.TestCase):
     def test_key_exchange_random(self):
+        #!COMMENT write a test for the above encrypt and decrypt library
+        #!CUT_START
         a_private_secret, a_public_secret = monocypher.generate_key_exchange_key_pair()
         b_private_secret, b_public_secret = monocypher.generate_key_exchange_key_pair()
         b_shared_secret = monocypher.key_exchange(b_private_secret, a_public_secret)
@@ -115,6 +117,7 @@ class TestEncWrappers(unittest.TestCase):
                                          encrypyt_wrapper(b_shared_secret, a_public_secret,
                                                           dumb_message))
                         )
+        #!CUT_END
 
 if __name__ == "__main__":
     global PRIV_KEY, PUB_KEY

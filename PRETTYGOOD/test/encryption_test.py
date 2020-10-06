@@ -11,7 +11,9 @@ import os
 import json
 import warnings
 
-
+#!COMMENT Take a look how the monocypher library is tested
+#!COMMENT This should help in understanding the crypto wrappers that I wrote
+#!COMMENT and how to test them
 class TestMonocypher(unittest.TestCase):
 
     def test_symmetric(self):

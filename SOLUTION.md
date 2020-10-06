@@ -1,32 +1,56 @@
-## student_NOSETEST/PRETTYGOOD/PRETTYGOOD.py
-170          just use the solution on this one, but lets talk better ways
 
-171          i got really lazy...
+
+- [student_NOSETEST/STOPANDCHAT/1_basic_testing.py](#student_NOSETEST/STOPANDCHAT/1_basic_testing.py)
+- [student_NOSETEST/STOPANDCHAT/2_automated_testing.py](#student_NOSETEST/STOPANDCHAT/2_automated_testing.py)
+- [student_NOSETEST/STOPANDCHAT/3_writing_first_test.py](#student_NOSETEST/STOPANDCHAT/3_writing_first_test.py)
+- [student_NOSETEST/STOPANDCHAT/4_understanding_testoutput.py](#student_NOSETEST/STOPANDCHAT/4_understanding_testoutput.py)
+- [student_NOSETEST/PRETTYGOOD/test/encryption_test.py](#student_NOSETEST/PRETTYGOOD/test/encryption_test.py)
+- [student_NOSETEST/PRETTYGOOD/data_utils.py](#student_NOSETEST/PRETTYGOOD/data_utils.py)
+- [student_NOSETEST/src/tests.cpp](#student_NOSETEST/src/tests.cpp)
+- [student_NOSETEST/src/monocypher.c](#student_NOSETEST/src/monocypher.c)
+- [student_NOSETEST/src/SPITESTORE.c](#student_NOSETEST/src/SPITESTORE.c)
+- [student_NOSETEST/src/ll.c](#student_NOSETEST/src/ll.c)
+- [student_NOSETEST/src/encryption.c](#student_NOSETEST/src/encryption.c)
+- [student_NOSETEST/PRETTYGOOD/PRETTYGOOD.py](#student_NOSETEST/PRETTYGOOD/PRETTYGOOD.py)
+## student_NOSETEST/STOPANDCHAT/1_basic_testing.py
+1  Warmup Exercise #1
+
+## student_NOSETEST/STOPANDCHAT/2_automated_testing.py
+1  Warmup Exercise #2
+
+## student_NOSETEST/STOPANDCHAT/3_writing_first_test.py
+1  Warmup Exercise #3
+
+## student_NOSETEST/STOPANDCHAT/4_understanding_testoutput.py
+1  Warmup Exercise #4
+
+## student_NOSETEST/PRETTYGOOD/test/encryption_test.py
+14  Take a look how the monocypher library is tested
+
+15  This should help in understanding the crypto wrappers that I wrote
+
+16  and how to test them
+
+## student_NOSETEST/PRETTYGOOD/data_utils.py
+105          write a test for the above encrypt and decrypt library
 
 ``` python
         #START CODE HERE
-173         print("starting echo test")
-174         my_echo_string = "testing my echo string" 
-175         q_task.put(TaskEcho(my_echo_string))
-176         print("awaiting echo test")
-177         task_resp = q_resp.get()
-178         q_resp.task_done()
-179         num, res = task_resp.return_res()
-180         self.assertEqual(ECHO,num)
-181         self.assertEqual(my_echo_string,res)
+107         a_private_secret, a_public_secret = monocypher.generate_key_exchange_key_pair()
+108         b_private_secret, b_public_secret = monocypher.generate_key_exchange_key_pair()
+109         b_shared_secret = monocypher.key_exchange(b_private_secret, a_public_secret)
+110         a_shared_secret = monocypher.key_exchange(a_private_secret, b_public_secret)
+111         self.assertEqual(a_shared_secret, b_shared_secret)
+112         dumb_message = bytes("this is my message",encoding='utf8')
+113 
+114         #CODE CAVING
+115         self.assertEqual(dumb_message,
+116                          decrypt_wrapper(a_shared_secret,
+117                                          encrypyt_wrapper(b_shared_secret, a_public_secret,
+118                                                           dumb_message))
+119                         )
         #END CODE HERE
 ```
-## student_NOSETEST/src/SPITESTORE.c
-1  try running it with out the task loop
-
-35      take this out and see what happens
-
-55      copy their keymat into the km structure
-
-56      what should i be checking for here
-
-150      this is embarrassing dont judge me
-
 ## student_NOSETEST/src/tests.cpp
 31  So lets talk a little bit about these bad tests
 
@@ -334,15 +358,21 @@
 445     ll_free(&sl4);
     //END CODE HERE
 ```
-## student_NOSETEST/src/encryption.c
-294 	 if we take this out...what happens
-
-295 	 how could you write an additional test for that?
-
 ## student_NOSETEST/src/monocypher.c
 1  What do you like about this code
 
 2  what do you hate about it
+
+## student_NOSETEST/src/SPITESTORE.c
+1  try running it with out the task loop
+
+35      take this out and see what happens
+
+55      copy their keymat into the km structure
+
+56      what should i be checking for here
+
+150      this is embarrassing dont judge me
 
 ## student_NOSETEST/src/ll.c
 245      take this out per instructions
@@ -355,29 +385,26 @@
 
 320      lol[1] = '0';
 
-## student_NOSETEST/STOPANDCHAT/5_test_exercise1.py
-8          please edit this portion to have a passing test and a failing test
+## student_NOSETEST/src/encryption.c
+294 	 if we take this out...what happens
 
-9          please edit this portion to have a passing test and a failing test
+295 	 how could you write an additional test for that?
 
-10          please edit this portion to have a passing test and a failing test
+## student_NOSETEST/PRETTYGOOD/PRETTYGOOD.py
+170          just use the solution on this one, but lets talk better ways
 
-11          please edit this portion to have a passing test and a failing test
-
-12          please edit this portion to have a passing test and a failing test
+171          i got really lazy...
 
 ``` python
         #START CODE HERE
-15         data = [1, 2, 3]
-16         result = sum(data)
-17         self.assertEqual(result, 6)
+173         print("starting echo test")
+174         my_echo_string = "testing my echo string" 
+175         q_task.put(TaskEcho(my_echo_string))
+176         print("awaiting echo test")
+177         task_resp = q_resp.get()
+178         q_resp.task_done()
+179         num, res = task_resp.return_res()
+180         self.assertEqual(ECHO,num)
+181         self.assertEqual(my_echo_string,res)
         #END CODE HERE
-```
-## student_NOSETEST/STOPANDCHAT/7_test.c
-5      Write hello world here
-
-``` c
-    //START CODE HERE
-7     printf("hello world\n");
-    //END CODE HERE
 ```
