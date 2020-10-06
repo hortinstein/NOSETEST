@@ -1,17 +1,17 @@
 
 
-- [student_NOSETEST/STOPANDCHAT/1_basic_testing.py](#student_NOSETESTSTOPANDCHAT1_basic_testing.py)
-- [student_NOSETEST/STOPANDCHAT/2_automated_testing.py](#student_NOSETESTSTOPANDCHAT2_automated_testing.py)
-- [student_NOSETEST/STOPANDCHAT/3_writing_first_test.py](#student_NOSETESTSTOPANDCHAT3_writing_first_test.py)
-- [student_NOSETEST/STOPANDCHAT/4_understanding_testoutput.py](#student_NOSETESTSTOPANDCHAT4_understanding_testoutput.py)
-- [student_NOSETEST/PRETTYGOOD/test/encryption_test.py](#student_NOSETESTPRETTYGOODtestencryption_test.py)
-- [student_NOSETEST/PRETTYGOOD/data_utils.py](#student_NOSETESTPRETTYGOODdata_utils.py)
-- [student_NOSETEST/src/tests.cpp](#student_NOSETESTsrctests.cpp)
-- [student_NOSETEST/src/monocypher.c](#student_NOSETESTsrcmonocypher.c)
-- [student_NOSETEST/src/SPITESTORE.c](#student_NOSETESTsrcSPITESTORE.c)
-- [student_NOSETEST/src/ll.c](#student_NOSETESTsrcll.c)
-- [student_NOSETEST/src/encryption.c](#student_NOSETESTsrcencryption.c)
-- [student_NOSETEST/PRETTYGOOD/PRETTYGOOD.py](#student_NOSETESTPRETTYGOODPRETTYGOOD.py)
+- [student_NOSETEST/STOPANDCHAT/1_basic_testing.py](#student_NOSETESTSTOPANDCHAT1_basic_testingpy)
+- [student_NOSETEST/STOPANDCHAT/2_automated_testing.py](#student_NOSETESTSTOPANDCHAT2_automated_testingpy)
+- [student_NOSETEST/STOPANDCHAT/3_writing_first_test.py](#student_NOSETESTSTOPANDCHAT3_writing_first_testpy)
+- [student_NOSETEST/STOPANDCHAT/4_understanding_testoutput.py](#student_NOSETESTSTOPANDCHAT4_understanding_testoutputpy)
+- [student_NOSETEST/PRETTYGOOD/test/encryption_test.py](#student_NOSETESTPRETTYGOODtestencryption_testpy)
+- [student_NOSETEST/PRETTYGOOD/data_utils.py](#student_NOSETESTPRETTYGOODdata_utilspy)
+- [student_NOSETEST/src/tests.cpp](#student_NOSETESTsrctestscpp)
+- [student_NOSETEST/src/monocypher.c](#student_NOSETESTsrcmonocypherc)
+- [student_NOSETEST/src/SPITESTORE.c](#student_NOSETESTsrcSPITESTOREc)
+- [student_NOSETEST/src/ll.c](#student_NOSETESTsrcllc)
+- [student_NOSETEST/src/encryption.c](#student_NOSETESTsrcencryptionc)
+- [student_NOSETEST/PRETTYGOOD/PRETTYGOOD.py](#student_NOSETESTPRETTYGOODPRETTYGOODpy)
 ## student_NOSETEST/STOPANDCHAT/1_basic_testing.py
 1  Warmup Exercise #1
 
