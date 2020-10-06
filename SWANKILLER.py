@@ -113,7 +113,7 @@ f.write("\n\n")
 for item in ordered_dict:
     if solution_dict[item] == "":
         continue
-    f.write("- [{}](#{})\n".format(item,item))
+    f.write("- [{}](#{})\n".format(item,item.replace("/","")))
 
 for item in ordered_dict:
     if solution_dict[item] == "":
