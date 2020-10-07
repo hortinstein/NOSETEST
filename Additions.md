@@ -52,3 +52,37 @@
   - test runner overview
   - discussions on alternate approaches
   - 
+
+##### high level objs
+- talk about how testing builds confidence
+- instrumenting a build environment that is cohesive to testing
+- unit
+- integration
+- code coverage
+- end to end (system)
+- acceptance
+- opsec
+- platform (maybe)
+- regression (maybe)
+- stylistic - writing testable code keep things on the stack as much as you can
+- standardize arg order
+##### general 
+- poor tests (LL example)
+- writing testable functions
+- CURL - does not fail without initing or freeing, but might cross platform?  This is specific to winsock...i think
+- cover hard to reach coverage tests: https://stackoverflow.com/questions/2592107/how-do-i-mock-memory-allocation-failures
+- cleanup errors, how do i structure clean code where I need to clean up the same things
+- debug print 
+- debug error
+- binary data substitutes
+- memory structs, and obj or data type wrappers for testing
+- compiler flags
+#### curl
+- what happens if the data is not NULL delimited
+
+#### encryption
+- ```python3 -m unittest PRETTYGOOD/test/encryption_test.py```
+
+#### building exercise into a bootable OS
+- https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
+- https://github.com/iximiuz/docker-to-linux

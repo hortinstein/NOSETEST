@@ -5,18 +5,15 @@
 ```
 docker build -t nosetest .
 sudo docker run -it --mount src=$(pwd),target=/workspace,type=bind nosetest /bin/ash
+```
 
-
-
-cp /monocypher-3.0.0/src/monocypher.h /workspaces/NOSETEST/include/
-cp /monocypher-3.0.0/src/monocypher.c /workspaces/NOSETEST/src/
+##### create student files
 
 ```
-```
-#create student files
+#get one level back on this directory
+cd .. 
 make --directory NOSETEST clean && rm -rf student_NOSETEST && python3 NOSETEST/SWANKILLER.py NOSETEST && cp student_NOSETEST/SOLUTION.md NOSETEST/
 ```
-Course Notes:
 
 ##### Disclaimer
 - some of this code is intentionally bad, and this is not up to any standards anywhere.  there are a few reasons for that:
@@ -26,38 +23,3 @@ Course Notes:
   - most of this course was written after work...or amidst covid quarentine, wine might have been involved
   - software is hard to write...and we are inherently bad at doing it, this course is to show you how to minimize your risk with some things I have found benefitted me over the years.  
 
-##### high level objs
-- talk about how testing builds confidence
-- instrumenting a build environment that is cohesive to testing
-- unit
-- integration
-- code coverage
-- end to end (system)
-- acceptance
-- opsec
-- platform (maybe)
-- regression (maybe)
-- stylistic - writing testable code keep things on the stack as much as you can
-- standardize arg order
-##### general 
-- poor tests (LL example)
-- writing testable functions
-- CURL - does not fail without initing or freeing, but might cross platform?  This is specific to winsock...i think
-- cover hard to reach coverage tests: https://stackoverflow.com/questions/2592107/how-do-i-mock-memory-allocation-failures
-- cleanup errors, how do i structure clean code where I need to clean up the same things
-- debug print 
-- debug error
-- binary data substitutes
-- memory structs, and obj or data type wrappers for testing
-- compiler flags
-#### curl
-- what happens if the data is not NULL delimited
-
-
-
-#### encryption
-- ```python3 -m unittest PRETTYGOOD/test/encryption_test.py```
-
-#### building exercise into a bootable OS
-- https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
-- https://github.com/iximiuz/docker-to-linux
