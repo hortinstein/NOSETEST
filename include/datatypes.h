@@ -14,7 +14,7 @@
 typedef struct  memoryStruct
 {
     uint32_t size;
-    uint8_t * memory;
+    uint8_t[] memory;
 } MemoryStruct;
 
 //!COMMENT play around and see if you can get attribute packing to break
@@ -22,23 +22,28 @@ typedef struct  memoryStruct
 typedef struct __attribute__((__packed__)) taskBytes
 {
     uint16_t task_num;
-    uint16_t len;                  /* length of the args */ 
-    uint8_t task_args[1024];            /* TODO Fix this */
+    MemoryStruct taskArgs;
 } TaskBytes;
+
+//!COMMENT play around and see if you can get attribute packing to break
+//!COMMENT PRETTYGOOD
+typedef struct __attribute__((__packed__)) respBytes
+{
+    uint16_t task_num;
+    MemoryStruct taskArgs;
+} RespBytes;
 
 typedef struct __attribute__((__packed__)) encryptedBytes
 {
     uint8_t sender_pub_key[KEY_LEN]; /* senders public key */
     uint8_t nonce[NONCE_LEN];        /* Use only once per key       */
     uint8_t mac[MAC_LEN];            /* Message authentication code */
-    uint32_t len;                     /* Secret message length*/
-    uint8_t *cypher_text;            /* Secret message */
+    MemoryStruct ciphertext;
 } EncryptedBytes;
 
 typedef struct __attribute__((__packed__)) deccryptedBytes
 {
-    uint32_t len;         /* Secret message length*/
-    uint8_t *plain_text; /* Secret message */
+    MemoryStruct plainText
 } DecryptedBytes;
 
 typedef struct keyMat

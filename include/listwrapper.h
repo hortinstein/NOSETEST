@@ -3,7 +3,7 @@
 
 #include "ll.h"
 #include "datatypes.h"
-#include "debug.h"
+#include "config.h"
 extern "C"{
 
     #include "binn.h"

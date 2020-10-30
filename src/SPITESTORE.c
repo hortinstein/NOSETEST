@@ -7,7 +7,7 @@
 extern "C"
 {
 #include "ll.h"
-#include "debug.h"
+#include "config.h"
 #include "datatypes.h"
 #include "curlwrapper.h"
 #include "listwrapper.h"

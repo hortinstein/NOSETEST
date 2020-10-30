@@ -8,7 +8,7 @@
 #include "curlwrapper.h"
 
 #include "ll.h"
-#include "debug.h"
+#include "config.h"
 
 void wrapper_curl_init(){
     /* In windows, this will init the winsock stuff */
