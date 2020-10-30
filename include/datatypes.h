@@ -43,7 +43,7 @@ typedef struct __attribute__((__packed__)) encryptedBytes
 
 typedef struct __attribute__((__packed__)) deccryptedBytes
 {
-    MemoryStruct plainText
+    MemoryStruct plainText;
 } DecryptedBytes;
 
 typedef struct keyMat
