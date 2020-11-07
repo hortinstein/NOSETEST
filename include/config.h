@@ -53,6 +53,4 @@
 #define PP_TASK_URL "" /* Don't do anything in release builds */
 #endif
 
-#define CHECK_ARGS(a,b) \
-       ({if(a){DEBUG_ERROR(b);goto fail}})
 #endif

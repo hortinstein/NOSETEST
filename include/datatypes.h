@@ -14,7 +14,7 @@
 typedef struct  memoryStruct
 {
     uint32_t size;
-    uint8_t[] memory;
+    uint8_t memory[];
 } MemoryStruct;
 
 //!COMMENT play around and see if you can get attribute packing to break
